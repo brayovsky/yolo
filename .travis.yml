@@ -20,4 +20,3 @@ before_install:
 after_success:
 
 cache: pip
-gs
