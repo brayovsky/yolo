@@ -5,7 +5,6 @@ from application.models.models import User, db
 @app.route('/')
 def hello_world():
     new_user = User("brian", "brian@ret.com", "password")
-    print("here")
     add_to_db(new_user)
     return 'Hello, World!'
 
