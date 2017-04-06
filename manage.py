@@ -7,16 +7,9 @@ from flask_migrate import Migrate, MigrateCommand
 from application.main.app import app
 from application.models.models import db
 
-
-dirname, filename = os.path.split(os.path.abspath(__file__))
-os.environ["SQLITE_DATABASE_PATH"] = 'sqlite:///' + \
-                                        os.path.join(dirname, "yolo.db")
-
-os.environ["SQLALCHEMY_DATABASE_URI"] = os.environ.get("SQLITE_DATABASE_PATH")
-
-app.config.from_object("application.models.models")
-
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("SQLITE_DATABASE_PATH")
+# app not getting settings from config
+print(app.config["SECRET_KEY"])
+print(os.environ.get("YOLO_SECRET_KEY"))
 
 migrate = Migrate(app, db)
 manager = Manager(app)
