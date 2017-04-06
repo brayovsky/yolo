@@ -1,21 +1,22 @@
+from datetime import datetime
+
 from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
 from passlib.apps import custom_app_context
 
 from application.main.app import app
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
 db = SQLAlchemy(app)
-migrate = Migrate(app, db)
 
 
 class User(db.Model):
     __tablename__ = "users"
 
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80), unique=True)
-    email = db.Column(db.String(250), unique=True)
-    password = db.Column(db.String(250))
+    username = db.Column(db.String(80), unique=True, nullable=False)
+    email = db.Column(db.String(250), unique=True, nullable=False)
+    password = db.Column(db.String(250), nullable=False)
+    bucketlists = db.relationship("Bucketlists", backref="owner",
+                                  lazy="dynamic")
 
     def hash_password(self, password):
         return custom_app_context.encrypt(password)
@@ -24,9 +25,51 @@ class User(db.Model):
         return custom_app_context.verify(password, self.password_hash)
 
     def __init__(self, username, email, password):
+        # assert correct number of characters
         self.username = username
         self.email = email
         self.password = self.hash_password(password)
 
     def __repr__(self):
         return '<User %r>' % self.username
+
+
+class Bucketlists(db.Model):
+    __tablename__ = "bucketlists"
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), unique=True, nullable=False)
+    created_by = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+    date_created = db.Column(db.DateTime, nullable=False)
+    date_modified = db.Column(db.DateTime)
+    items = db.relationship("Items", backref="bucket",
+                            lazy="dynamic")
+
+    def __init__(self, name, created_by):
+        # assert correct number of characters
+        self.name = name
+        self.created_by = created_by
+        self.date_created = datetime.now()
+
+    def __repr__(self):
+        return "<Bucketlist %r>" % self.name
+
+
+class Items(db.Model):
+    __tablename__ = "items"
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(250), unique=True, nullable=False)
+    bucketlist = db.Column(db.Integer, db.ForeignKey("bucketlists.id"),
+                           nullable=False)
+    date_created = db.Column(db.DateTime, nullable=False)
+    date_modified = db.Column(db.DateTime)
+
+    def __init__(self, name, bucketlist):
+        # assert correct number of characters
+        self.name = name
+        self.bucketlist = bucketlist
+        self.date_created = datetime.now()
+
+    def __repr__(self):
+        return "<Item %r>" % self.name
