@@ -38,7 +38,8 @@ class Bucketlists(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), unique=True, nullable=False)
-    created_by = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+    created_by = db.Column(db.Integer, db.ForeignKey("users.id"),
+                           nullable=False)
     date_created = db.Column(db.DateTime, nullable=False)
     date_modified = db.Column(db.DateTime)
     items = db.relationship("Items", backref="bucket",
