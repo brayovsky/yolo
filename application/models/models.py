@@ -21,7 +21,7 @@ class User(db.Model):
         return custom_app_context.encrypt(password)
 
     def verify_password(self, password):
-        return custom_app_context.verify(password, self.password_hash)
+        return custom_app_context.verify(password, self.password)
 
     def __init__(self, username, email, password):
         # assert correct number of characters

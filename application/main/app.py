@@ -1,5 +1,7 @@
 from flask import Flask
-from flask_restful import Resource, Api, reqparse
+from flask_restful import Resource, Api
+
+from application.main.verify import Verify
 
 app = Flask(__name__)
 api = Api(app)
@@ -18,7 +20,7 @@ class Login(Resource):
     """
     def post(self):
         """Logs in an existing user"""
-        return "login"
+        pass
 
 
 class Register(Resource):
@@ -27,7 +29,7 @@ class Register(Resource):
     """
     def post(self):
         """Registers a new user"""
-        return "register"
+        pass
 
 
 class Bucketlists(Resource):
@@ -36,11 +38,11 @@ class Bucketlists(Resource):
     """
     def post(self):
         """Creates a new bucketlist"""
-        return "new bucketlist"
+        pass
 
     def get(self):
         """Retreives all bucketlists"""
-        return "all bucketlists"
+        pass
 
 
 class SingleBucketlist(Resource):
@@ -49,15 +51,15 @@ class SingleBucketlist(Resource):
     """
     def get(self, id):
         """Retreives a single bucketlist and items"""
-        return "get single bucketlist"
+        pass
 
     def put(self, id):
         """Updates a single bucketlist"""
-        return "update bucketlist"
+        pass
 
     def delete(self, id):
         """Deletes a bucketlist"""
-        return "delete bucketlist"
+        pass
 
 
 class NewBucketListItems(Resource):
@@ -66,24 +68,24 @@ class NewBucketListItems(Resource):
         """
     def post(self, id):
         """Creates new bucketlist items for a bucketlist"""
-        return "new bucketlist items"
+        pass
 
 
 class BucketListItems(Resource):
     """Bundles all processes from the request
        /bucketlists/<id>/items/<item_id>
     """
-    def post(self, id):
+    def post(self, id, item_id):
         """Creates a new item in a bucketlist"""
-        return "new item in bucketlist"
+        pass
 
-    def put(self, id, item_id):
+    def put(self, id):
         """Updates an item in a bucketlist"""
-        return "update an item in bucketlist"
+        pass
 
-    def delete(self, id, item_id):
+    def delete(self, id):
         """Deletes an item in a bucketlist"""
-        return "delete a bucketlist item"
+        pass
 
 
 api.add_resource(Login, "/auth/login")
