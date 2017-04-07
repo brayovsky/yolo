@@ -2,7 +2,6 @@ from datetime import datetime
 
 from flask_sqlalchemy import SQLAlchemy
 from passlib.apps import custom_app_context
-
 from application.main.app import app
 
 db = SQLAlchemy(app)
