@@ -111,12 +111,12 @@ class BucketListItems(Resource, Common):
         pass
 
 
-api.add_resource(Login, "/auth/login")
-api.add_resource(Register, "/auth/register")
-api.add_resource(Bucketlists, "/bucketlists")
-api.add_resource(SingleBucketlist, "/bucketlists/<id>")
-api.add_resource(NewBucketListItems, "/bucketlists/<id>/items")
-api.add_resource(BucketListItems, "/bucketlists/<id>/items/<item_id>")
+api.add_resource(Login, "/v1/auth/login")
+api.add_resource(Register, "/v1/auth/register")
+api.add_resource(Bucketlists, "/v1/bucketlists")
+api.add_resource(SingleBucketlist, "/v1/bucketlists/<id>")
+api.add_resource(NewBucketListItems, "/v1/bucketlists/<id>/items")
+api.add_resource(BucketListItems, "/v1/bucketlists/<id>/items/<item_id>")
 
 
 if __name__ == "__main__":
