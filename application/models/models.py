@@ -66,6 +66,9 @@ class Bucketlists(db.Model):
     items = db.relationship("Items", backref="bucket",
                             lazy="dynamic")
 
+    def update_date_modified(self):
+        self.date_modified = datetime.now()
+
     def __init__(self, name, created_by):
         # assert correct number of characters
         self.name = name
