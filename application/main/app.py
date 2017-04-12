@@ -46,7 +46,7 @@ class Register(Resource, Common):
         pass
 
 
-class Bucketlists(Resource, Common):
+class UserBucketlists(Resource, Common):
     """Bundles all processes from the request
        /bucketlists
     """
@@ -108,7 +108,7 @@ class BucketListItems(Resource, Common):
 
 api.add_resource(Login, "/v1/auth/login")
 api.add_resource(Register, "/v1/auth/register")
-api.add_resource(Bucketlists, "/v1/bucketlists")
+api.add_resource(UserBucketlists, "/v1/bucketlists")
 api.add_resource(SingleBucketlist, "/v1/bucketlists/<id>")
 api.add_resource(NewBucketListItems, "/v1/bucketlists/<id>/items")
 api.add_resource(BucketListItems, "/v1/bucketlists/<id>/items/<item_id>")
