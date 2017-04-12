@@ -22,3 +22,17 @@ class TestSignUp(BaseTestCase):
 
     def test_signs_up_with_post_only(self):
         pass
+
+
+class TestLogIn(BaseTestCase):
+    def setUp(self):
+        super(TestLogIn, self).setUp()
+
+    def tearDown(self):
+        pass
+
+    def test_does_not_login_invalid_user(self):
+        pass
+
+    def test_logs_in_with_post_only(self):
+        pass

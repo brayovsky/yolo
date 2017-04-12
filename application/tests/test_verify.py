@@ -44,3 +44,9 @@ class TestVerify(BaseTestCase):
 
     def test_user_exists_with_valid_email_and_username(self):
         pass
+
+    def test_verify_email_with_invalid_email(self):
+        pass
+
+    def test_verify_email_with_valid_email(self):
+        pass
