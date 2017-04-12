@@ -8,7 +8,7 @@ app.config.from_object("application.default_settings.DevelopmentConfig")
 app.config.from_envvar("YOLO_SETTINGS")
 
 # Ignore pep8 to enable cyclic import
-from application.models.models import User, db
+from application.models.models import User, Bucketlists, Items, db
 from application.main.verify import Verify, auth
 
 api = Api(app)

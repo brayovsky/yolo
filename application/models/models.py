@@ -2,9 +2,11 @@ from datetime import datetime
 
 from flask_sqlalchemy import SQLAlchemy
 from passlib.apps import custom_app_context
-from application.main.app import app
 from itsdangerous import (TimedJSONWebSignatureSerializer
                           as Serializer, BadSignature, SignatureExpired)
+
+
+from application.main.app import app
 
 
 db = SQLAlchemy(app)
