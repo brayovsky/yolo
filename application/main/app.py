@@ -96,11 +96,6 @@ class BucketListItems(Resource, Common):
        /bucketlists/<id>/items/<item_id>
     """
     @auth.login_required
-    def post(self, id, item_id):
-        """Creates a new item in a bucketlist"""
-        pass
-
-    @auth.login_required
     def put(self, id):
         """Updates an item in a bucketlist"""
         pass
