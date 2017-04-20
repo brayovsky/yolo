@@ -26,7 +26,7 @@ class Verify:
 
     @staticmethod
     @auth.verify_password
-    def verify_password(username_or_token, password):
+    def verify_user(username_or_token, password):
         """Verifies a valid user by a token
          or username and password
          """

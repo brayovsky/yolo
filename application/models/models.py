@@ -2,9 +2,11 @@ from datetime import datetime
 
 from flask_sqlalchemy import SQLAlchemy
 from passlib.apps import custom_app_context
-from application.main.app import app
 from itsdangerous import (TimedJSONWebSignatureSerializer
                           as Serializer, BadSignature, SignatureExpired)
+
+
+from application.main.app import app
 
 
 db = SQLAlchemy(app)
@@ -28,7 +30,8 @@ class User(db.Model):
 
     def generate_auth_token(self, expiration=600):
         s = Serializer(app.config['SECRET_KEY'], expires_in=expiration)
-        return s.dumps({'id': self.id}).decode()
+        token = s.dumps({'id': self.id})
+        return token.decode()
 
     @staticmethod
     def verify_auth_token(token):
@@ -63,6 +66,9 @@ class Bucketlists(db.Model):
     date_modified = db.Column(db.DateTime)
     items = db.relationship("Items", backref="bucket",
                             lazy="dynamic")
+
+    def update_date_modified(self):
+        self.date_modified = datetime.now()
 
     def __init__(self, name, created_by):
         # assert correct number of characters

@@ -8,7 +8,7 @@ app.config.from_object("application.default_settings.DevelopmentConfig")
 app.config.from_envvar("YOLO_SETTINGS")
 
 # Ignore pep8 to enable cyclic import
-from application.models.models import User, db
+from application.models.models import User, Bucketlists, Items, db
 from application.main.verify import Verify, auth
 
 api = Api(app)
@@ -46,7 +46,7 @@ class Register(Resource, Common):
         pass
 
 
-class Bucketlists(Resource, Common):
+class UserBucketlists(Resource, Common):
     """Bundles all processes from the request
        /bucketlists
     """
@@ -96,11 +96,6 @@ class BucketListItems(Resource, Common):
        /bucketlists/<id>/items/<item_id>
     """
     @auth.login_required
-    def post(self, id, item_id):
-        """Creates a new item in a bucketlist"""
-        pass
-
-    @auth.login_required
     def put(self, id):
         """Updates an item in a bucketlist"""
         pass
@@ -111,12 +106,12 @@ class BucketListItems(Resource, Common):
         pass
 
 
-api.add_resource(Login, "/auth/login")
-api.add_resource(Register, "/auth/register")
-api.add_resource(Bucketlists, "/bucketlists")
-api.add_resource(SingleBucketlist, "/bucketlists/<id>")
-api.add_resource(NewBucketListItems, "/bucketlists/<id>/items")
-api.add_resource(BucketListItems, "/bucketlists/<id>/items/<item_id>")
+api.add_resource(Login, "/v1/auth/login")
+api.add_resource(Register, "/v1/auth/register")
+api.add_resource(UserBucketlists, "/v1/bucketlists")
+api.add_resource(SingleBucketlist, "/v1/bucketlists/<id>")
+api.add_resource(NewBucketListItems, "/v1/bucketlists/<id>/items")
+api.add_resource(BucketListItems, "/v1/bucketlists/<id>/items/<item_id>")
 
 
 if __name__ == "__main__":
