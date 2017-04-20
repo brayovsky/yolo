@@ -19,7 +19,8 @@ class Common:
     @staticmethod
     def add_to_db(model_obj):
         """Commits added items to the database"""
-        pass
+        db.session.add(model_obj)
+        db.session.commit()
 
     @staticmethod
     def update_db():
@@ -42,8 +43,26 @@ class Register(Resource, Common):
     """
     def post(self):
         """Registers a new user"""
-        # If user logged in do not register
-        pass
+        user_data = {"username": request.form.get('username'),
+                     "password": request.form.get('password'),
+                     "email": request.form.get('email')}
+
+        # Verify user data is as expected
+        verify_data = Verify.verify_user_details(user_data)
+        if not verify_data["success"]:
+            return verify_data["errors"], 400
+
+        # Check user logged in or exists
+        if Verify.verify_user(user_data["username"], user_data["password"]):
+            return {"message": "You are already logged in or user exists"}, 403
+
+        # User passed register him/her
+        new_user = User(user_data["username"],
+                        user_data["email"],
+                        user_data["password"])
+        self.add_to_db(new_user)
+        user_data.pop("password")
+        return user_data, 201
 
 
 class UserBucketlists(Resource, Common):
