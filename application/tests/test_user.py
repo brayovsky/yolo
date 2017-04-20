@@ -1,3 +1,4 @@
+import unittest
 from unittest.mock import MagicMock
 
 from itsdangerous import (TimedJSONWebSignatureSerializer
@@ -7,12 +8,6 @@ from application.tests.base_test import BaseTestCase, User, app
 
 
 class TestUserModel(BaseTestCase):
-    def setUp(self):
-        super(TestUserModel, self).setUp()
-
-    def tearDown(self):
-        super(TestUserModel, self).tearDown()
-
     def test_hashes_password(self):
         # Since hash is unpredictable, test if original
         # password is not equal to new password_hash and
@@ -40,3 +35,7 @@ class TestUserModel(BaseTestCase):
 
     def test_does_not_verify_invalid_token(self):
         assert not User.verify_auth_token("invalidtoken")
+
+
+if __name__ == '__main__':
+    unittest.main()

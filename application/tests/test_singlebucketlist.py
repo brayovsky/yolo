@@ -1,14 +1,9 @@
+import unittest
+
 from application.tests.base_test import BaseTestCase
 
 
 class TestSingleBucketList(BaseTestCase):
-    def setUp(self):
-        super(TestSingleBucketList, self).setUp()
-        # Log in user
-
-    def tearDown(self):
-        super(TestSingleBucketList, self).tearDown()
-
     def test_does_not_retreive_with_invalid_id(self):
         pass
 
@@ -35,3 +30,7 @@ class TestSingleBucketList(BaseTestCase):
 
     def test_deletes_and_returns_expected_json(self):
         pass
+
+
+if __name__ == '__main__':
+    unittest.main()

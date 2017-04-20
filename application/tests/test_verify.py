@@ -1,3 +1,5 @@
+import unittest
+
 from application.main.verify import Verify
 from application.tests.base_test import BaseTestCase
 
@@ -8,9 +10,6 @@ class TestVerify(BaseTestCase):
         # Set huge number for an impossible id
         self.invalid_bucketlist_id = 4000
         self.invalid_item_id = 4000
-
-    def tearDown(self):
-        super(TestVerify, self).tearDown()
 
     def test_verify_id_is_int_with_string(self):
         assert not Verify.verify_id_is_int("string")
@@ -66,3 +65,7 @@ class TestVerify(BaseTestCase):
 
     def test_verify_email_with_valid_email(self):
         assert Verify.verify_valid_email("goodemail@mail.com")
+
+
+if __name__ == '__main__':
+    unittest.main()

@@ -1,14 +1,9 @@
+import unittest
+
 from application.tests.base_test import BaseTestCase
 
 
 class TestBucketlists(BaseTestCase):
-    def setUp(self):
-        super(TestBucketlists, self).setUp()
-        # Log in user
-
-    def tearDown(self):
-        super(TestBucketlists, self).tearDown()
-
     def test_cannot_create_when_logged_out(self):
         pass
 
@@ -29,3 +24,7 @@ class TestBucketlists(BaseTestCase):
 
     def test_retreives_bucketlists_using_get(self):
         pass
+
+
+if __name__ == '__main__':
+    unittest.main()

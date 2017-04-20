@@ -1,14 +1,8 @@
+import unittest
 from application.tests.base_test import BaseTestCase
 
 
 class TestBucketlistItems(BaseTestCase):
-    def setUp(self):
-        super(TestBucketlistItems, self).setUp()
-        # Log in user
-
-    def tearDown(self):
-        super(TestBucketlistItems, self).tearDown()
-
     def test_must_be_logged_in_to_update_items(self):
         pass
 
@@ -29,3 +23,7 @@ class TestBucketlistItems(BaseTestCase):
 
     def test_bucketlist_has_to_be_valid(self):
         pass
+
+
+if __name__ == '__main__':
+    unittest.main()

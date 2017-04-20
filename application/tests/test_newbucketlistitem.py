@@ -1,3 +1,5 @@
+import unittest
+
 from application.tests.base_test import BaseTestCase
 
 
@@ -19,3 +21,7 @@ class TestNewBucketlistItem(BaseTestCase):
 
     def test_creates_items(self):
         pass
+
+
+if __name__ == '__main__':
+    unittest.main()

@@ -34,5 +34,7 @@ class BaseTestCase(TestCase):
         self.item = Items.query.filter_by(name="item1").first()
 
     def tearDown(self):
+        super(BaseTestCase, self).tearDown()
+        db.session.remove()
         db.drop_all()
 

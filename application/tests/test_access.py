@@ -1,13 +1,8 @@
+import unittest
 from application.tests.base_test import BaseTestCase
 
 
 class TestSignUp(BaseTestCase):
-    def setUp(self):
-        super(TestSignUp, self).setUp()
-
-    def tearDown(self):
-        super(TestSignUp, self).tearDown()
-
     def test_does_not_signup_with_invalid_email(self):
         # Sign up with an invalid email
         pass
@@ -26,14 +21,11 @@ class TestSignUp(BaseTestCase):
 
 
 class TestLogIn(BaseTestCase):
-    def setUp(self):
-        super(TestLogIn, self).setUp()
-
-    def tearDown(self):
-        super(TestSignUp, self).tearDown()
-
     def test_does_not_login_invalid_user(self):
         pass
 
     def test_logs_in_with_post_only(self):
         pass
+
+if __name__ == "__main__":
+    unittest.main()
