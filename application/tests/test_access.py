@@ -6,9 +6,10 @@ class TestSignUp(BaseTestCase):
         super(TestSignUp, self).setUp()
 
     def tearDown(self):
-        pass
+        super(TestSignUp, self).tearDown()
 
     def test_does_not_signup_with_invalid_email(self):
+        # Sign up with an invalid email
         pass
 
     def test_does_not_signup_with_invalid_username(self):
@@ -29,7 +30,7 @@ class TestLogIn(BaseTestCase):
         super(TestLogIn, self).setUp()
 
     def tearDown(self):
-        pass
+        super(TestSignUp, self).tearDown()
 
     def test_does_not_login_invalid_user(self):
         pass

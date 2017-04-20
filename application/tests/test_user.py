@@ -11,7 +11,7 @@ class TestUserModel(BaseTestCase):
         super(TestUserModel, self).setUp()
 
     def tearDown(self):
-        pass
+        super(TestUserModel, self).tearDown()
 
     def test_hashes_password(self):
         # Since hash is unpredictable, test if original

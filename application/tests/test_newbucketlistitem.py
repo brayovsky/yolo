@@ -6,7 +6,7 @@ class TestNewBucketlistItem(BaseTestCase):
         super(TestNewBucketlistItem, self).setUp()
 
     def tearDown(self):
-        pass
+        super(TestNewBucketlistItem, self).tearDown()
 
     def test_must_be_logged_in_to_create_items(self):
         pass

@@ -6,7 +6,7 @@ class TestBucketlists(BaseTestCase):
         super(TestBucketlists, self).setUp()
 
     def tearDown(self):
-        pass
+        super(TestBucketlists, self).tearDown()
 
     def test_updates_date_modified(self):
         pass

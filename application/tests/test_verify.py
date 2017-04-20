@@ -10,7 +10,7 @@ class TestVerify(BaseTestCase):
         self.invalid_item_id = 4000
 
     def tearDown(self):
-        pass
+        super(TestVerify, self).tearDown()
 
     def test_verify_id_is_int_with_string(self):
         assert not Verify.verify_id_is_int("string")

@@ -6,7 +6,7 @@ class TestCommon(BaseTestCase):
         super(TestCommon, self).setUp()
 
     def tearDown(self):
-        pass
+        super(TestCommon, self).tearDown()
 
     def test_add_to_db(self):
         pass

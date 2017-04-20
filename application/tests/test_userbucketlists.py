@@ -7,7 +7,7 @@ class TestBucketlists(BaseTestCase):
         # Log in user
 
     def tearDown(self):
-        pass
+        super(TestBucketlists, self).tearDown()
 
     def test_cannot_create_when_logged_out(self):
         pass

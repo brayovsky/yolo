@@ -7,7 +7,7 @@ class TestSingleBucketList(BaseTestCase):
         # Log in user
 
     def tearDown(self):
-        pass
+        super(TestSingleBucketList, self).tearDown()
 
     def test_does_not_retreive_with_invalid_id(self):
         pass

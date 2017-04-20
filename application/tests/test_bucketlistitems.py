@@ -7,7 +7,7 @@ class TestBucketlistItems(BaseTestCase):
         # Log in user
 
     def tearDown(self):
-        pass
+        super(TestBucketlistItems, self).tearDown()
 
     def test_must_be_logged_in_to_update_items(self):
         pass
