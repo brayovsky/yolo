@@ -34,7 +34,22 @@ class Login(Resource):
     """
     def post(self):
         """Logs in an existing user"""
-        pass
+        # Send username and password
+        user_data = {"username": request.form.get('username'),
+                     "password": request.form.get('password')}
+
+        # Verify correct format
+        verify_data = Verify.verify_user_details(user_data)
+        if not verify_data["success"]:
+            return verify_data["errors"], 400
+
+        # Log in
+        user = Verify.verify_user(user_data["username"], user_data["password"])
+        if user:
+            return {"user": g.user.username,
+                    "token": g.user.token}, 200
+        return {"message": "Invalid credentials"}, 401
+
 
 
 class Register(Resource, Common):

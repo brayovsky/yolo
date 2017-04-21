@@ -20,10 +20,6 @@ user_schema = UserSchema()
 class Verify:
     """Holds methods for verifying input data from the user"""
     @staticmethod
-    def verify_id_is_int(val, abort=False):
-        pass
-
-    @staticmethod
     def verify_bucketlist_exists(bucketlist_id=None, bucketlist_name=None,
                                  abort=False):
         """Verify bucketlist id or name exists in db"""
@@ -48,23 +44,10 @@ class Verify:
             user = User.query.filter_by(username=username_or_token).first()
             if not user or not user.verify_password(password):
                 return False
-        return user
-
-    @staticmethod
-    def verify_valid_username(username, abort=False):
-        """Verify username is a valid username"""
-        pass
-
-    @staticmethod
-    def verify_user_exists(username=None, email=None,
-                           abort=False):
-        """Verify username exists in db"""
-        pass
-
-    @staticmethod
-    def verify_valid_email(email, abort=False):
-        """Verify email is a valid email"""
-        pass
+            g.user = user
+            g.user.token = user.generate_auth_token()
+        g.user = user
+        return True
 
     @staticmethod
     def verify_user_details(user_data):
