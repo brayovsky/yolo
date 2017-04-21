@@ -51,7 +51,6 @@ class Login(Resource):
         return {"message": "Invalid credentials"}, 401
 
 
-
 class Register(Resource, Common):
     """Bundles all processes from the request
        /auth/register
@@ -68,7 +67,9 @@ class Register(Resource, Common):
             return verify_data["errors"], 400
 
         # Check user logged in or exists
-        if Verify.verify_user(user_data["username"], user_data["password"]):
+        if Verify.verify_user(user_data["username"],
+                              user_data["password"],
+                              ):
             return {"message": "You are already logged in or user exists"}, 403
 
         # User passed register him/her
@@ -76,8 +77,12 @@ class Register(Resource, Common):
                         user_data["email"],
                         user_data["password"])
         self.add_to_db(new_user)
-        user_data.pop("password")
-        return user_data, 201
+
+        # Make new return dict since popping password affects
+        # original dict affecting tests
+        response = {"username": user_data["username"],
+                    "email": user_data["email"]}
+        return response, 201
 
 
 class UserBucketlists(Resource, Common):
