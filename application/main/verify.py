@@ -44,9 +44,15 @@ class Verify:
             user = User.query.filter_by(username=username_or_token).first()
             if not user or not user.verify_password(password):
                 return False
-            g.user = user
-            g.user.token = user.generate_auth_token()
+        return True
+
+    @staticmethod
+    def verify_login(username, password):
+        user = User.query.filter_by(username=username).first()
+        if not user or not user.verify_password(password):
+            return False
         g.user = user
+        g.user.token = user.generate_auth_token()
         return True
 
     @staticmethod

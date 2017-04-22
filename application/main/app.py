@@ -39,16 +39,19 @@ class Login(Resource):
                      "password": request.form.get('password')}
 
         # Verify correct format
+        # Not checking if fields are null
         verify_data = Verify.verify_user_details(user_data)
         if not verify_data["success"]:
             return verify_data["errors"], 400
 
         # Log in
-        user = Verify.verify_user(user_data["username"], user_data["password"])
-        if user:
-            return {"user": g.user.username,
-                    "token": g.user.token}, 200
-        return {"message": "Invalid credentials"}, 401
+        # If username is a valid token problems will arise
+        if not Verify.verify_login(user_data["username"],
+                                   user_data["password"]):
+            return {"message": "Invalid credentials"}, 401
+
+        return {"user": g.user.username,
+                "token": g.user.token}, 200
 
 
 class Register(Resource, Common):
