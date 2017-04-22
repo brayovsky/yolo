@@ -18,6 +18,7 @@ class BaseTestCase(TestCase):
         db.session.commit()
 
         self.bob = User.query.filter_by(username="Bob").first()
+        self.bob.raw_password = "password"
 
         # Add a bucketlist to Bob
         self.bucketlist = Bucketlists("bucketlist1", self.bob.id)

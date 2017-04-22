@@ -12,14 +12,15 @@ class TestRegister(BaseTestCase):
         self.user_data = {"username": "baba",
                           "password": "cheers",
                           "email": "cheers@baba.com"}
+        self.url = "/v1/auth/register"
 
     def test_register_validates_data(self):
         # Function verify_user_data validates user data
         # Check if verify_user_data was called
 
         Verify.verify_user_details = MagicMock()
-        self.client.post("/v1/auth/register",
-                                    data=self.user_data)
+        self.client.post(self.url,
+                         data=self.user_data)
 
         Verify.verify_user_details.assert_called_with(self.user_data)
 
@@ -28,22 +29,22 @@ class TestRegister(BaseTestCase):
         # Assert verify_user was called
 
         Verify.verify_user = MagicMock()
-        self.client.post("/v1/auth/register",
-                                    data=self.user_data)
+        self.client.post(self.url,
+                         data=self.user_data)
 
         Verify.verify_user.assert_called_with(self.user_data["username"],
                                               self.user_data["password"])
 
     def test_register_api_status_with_valid_data(self):
         # Check status code
-        response = self.client.post("/v1/auth/register",
+        response = self.client.post(self.url,
                                     data=self.user_data)
 
         assert response.status_code == 201
 
     def test_register_api_response_with_valid_data(self):
         # Check response
-        response = self.client.post("/v1/auth/register",
+        response = self.client.post(self.url,
                                     data=self.user_data)
         expected_response = {"username": self.user_data["username"],
                              "email": self.user_data["email"]}
@@ -58,36 +59,47 @@ class TestLogIn(BaseTestCase):
         super(TestLogIn, self).setUp()
         self.user_data = {"username": "baba",
                           "password": "cheers"}
+        self.url = "/v1/auth/login"
+
+    ## Commented tests are using magicmock which causes
+    ## unwanted errors because when using magicmock,
+    ## the function is not executed and any assignment
+    ## to the function copies the magicmock object
 
     # def test_login_validates_data(self):
     #     # Function verify_user_data validates user data
     #     # Check if verify_user_data was called
     #
     #     Verify.verify_user_details = MagicMock()
-    #     self.client.post("/v1/auth/login",
+    #     self.client.post(self.url,
     #                      data=self.user_data)
     #
-    #     Verify.verify_user_details.assert_called_with(self.user_data)
-
-    def test_login_checks_user_exists(self):
-        # Function verify_user will check if user exists
-        # Assert verify_user was called
-        self.custom_data = {"username": self.bob.username,
-                            "password": "password"}
-        print(self.bob.username)
-
-        Verify.verify_user = MagicMock()
-        self.client.post("/v1/auth/login",
-                         data=self.custom_data)
-
-        Verify.verify_user.assert_called_with(self.custom_data["username"],
-                                              self.custom_data["password"])
+    #     # Verify.verify_user_details.assert_called_with(self.user_data)
+    #
+    # def test_login_checks_user_exists(self):
+    #     # Function verify_login will check if user exists and log in
+    #     # Assert verify_user was called
+    #
+    #     Verify.verify_login = MagicMock()
+    #     self.client.post(self.url,
+    #                      data=self.user_data)
+    #
+    #     # Verify.verify_login.assert_called_with(self.user_data["username"],
+    #     #                                        self.user_data["password"])
 
     def test_login_status_with_valid_credentials(self):
-        pass
+        user_data = {"username": self.bob.username,
+                     "password": self.bob.raw_password}
+        response = self.client.post(self.url,
+                                   data=user_data)
+
+        assert response.status_code == 200
 
     def test_login_status_with_invalid_credentials(self):
-        pass
+        response = self.client.post(self.url,
+                                    data=self.user_data)
+
+        assert response.status_code == 401
 
 if __name__ == "__main__":
     unittest.main()

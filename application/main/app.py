@@ -43,15 +43,15 @@ class Login(Resource):
         verify_data = Verify.verify_user_details(user_data)
         if not verify_data["success"]:
             return verify_data["errors"], 400
-
         # Log in
         # If username is a valid token problems will arise
-        if not Verify.verify_login(user_data["username"],
-                                   user_data["password"]):
+        user = Verify.verify_login(user_data["username"],
+                                   user_data["password"])
+        if not user:
             return {"message": "Invalid credentials"}, 401
 
-        return {"user": g.user.username,
-                "token": g.user.token}, 200
+        return {"user": user.username,
+                "token": user.token}, 200
 
 
 class Register(Resource, Common):

@@ -48,12 +48,12 @@ class Verify:
 
     @staticmethod
     def verify_login(username, password):
+        """Verify login details are correct"""
         user = User.query.filter_by(username=username).first()
         if not user or not user.verify_password(password):
             return False
-        g.user = user
-        g.user.token = user.generate_auth_token()
-        return True
+        user.token = user.generate_auth_token()
+        return user
 
     @staticmethod
     def verify_user_details(user_data):
