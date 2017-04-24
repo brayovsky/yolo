@@ -1,9 +1,8 @@
 import unittest
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 import json
 
-from application.tests.base_test import BaseTestCase, User
-from application.main.verify import Verify
+from application.tests.base_test import BaseTestCase
 
 
 class TestRegister(BaseTestCase):
@@ -87,7 +86,7 @@ class TestLogIn(BaseTestCase):
                              data=self.user_data)
 
             verify_login_mock.assert_called_with(self.user_data["username"],
-                                                   self.user_data["password"])
+                                                 self.user_data["password"])
 
     def test_login_status_with_valid_credentials(self):
         user_data = {"username": self.bob.username,
