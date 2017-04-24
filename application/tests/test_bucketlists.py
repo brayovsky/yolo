@@ -6,12 +6,6 @@ from application.tests.base_test import BaseTestCase
 class TestCreateBucketlist(BaseTestCase):
     """Tests endpoint for creating bucketlists"""
 
-    def setUp(self):
-        # Log in bob
-        # acqujre token and base 64 encode it.
-        # set the encoded token in authorisation header
-        pass
-
     def test_create_bucketlist_validates_data(self):
 
         pass

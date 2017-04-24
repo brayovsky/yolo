@@ -1,4 +1,8 @@
 from unittest import TestCase
+from base64 import b64encode
+
+from itsdangerous import (TimedJSONWebSignatureSerializer
+                          as Serializer, BadSignature, SignatureExpired)
 
 from application.main.app import User, Bucketlists, Items, db, app
 
@@ -38,4 +42,15 @@ class BaseTestCase(TestCase):
         super(BaseTestCase, self).tearDown()
         db.session.remove()
         db.drop_all()
+
+    def get_authorisation_header(self):
+        # Log in bob
+        # acqujre token and base 64 encode it.
+        # set the encoded token in authorisation header
+        s = Serializer(app.config['SECRET_KEY'], expires_in=600)
+        token = s.dumps({'id': self.bob.id})
+
+        # decode from bytes to string
+        header = "Basic " + b64encode(token).decode()
+        return header
 
