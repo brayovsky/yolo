@@ -9,12 +9,19 @@ class TestCreateBucketlist(BaseTestCase):
     def setUp(self):
         super(TestCreateBucketlist, self).setUp()
         self.url = "/v1/bucketlists"
+        self.bucketlist_data = {"name": "before 26"}
 
     def test_create_bucketlist_validates_data(self):
-        pass
+        with patch("application.main.verify.Verify.verify_bucketlist_details",
+                   return_value={"success": True}) as verify_bucketlist_data:
+            authorization = self.get_authorisation_header()
+            self.client.post(self.url,
+                             data=self.bucketlist_data,
+                             headers={"Authorization": authorization})
+
+            verify_bucketlist_data.assert_called_with(self.bucketlist_data)
 
     def test_create_bucketlist_rejects_similar_name(self):
-
         pass
 
     def test_creates_bucketlist_with_valid_parameters(self):

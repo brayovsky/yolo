@@ -44,6 +44,7 @@ class BaseTestCase(TestCase):
         db.drop_all()
 
     def get_authorisation_header(self):
-        return {"username": self.bob.username,
-                "password": self.bob.raw_password}
+        auth_string = self.bob.username + ":" + self.bob.raw_password
+        header = "Basic " + b64encode(auth_string.encode()).decode()
+        return header
 

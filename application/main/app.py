@@ -95,6 +95,7 @@ class UserBucketlists(Resource, Common):
     @auth.login_required
     def post(self):
         """Creates a new bucketlist"""
+        print("herre")
         bucketlist_data = {"name": request.form.get("name")}
 
         # Validate user data
@@ -102,7 +103,6 @@ class UserBucketlists(Resource, Common):
         if not verify_data["success"]:
             return verify_data["errors"], 400
 
-        # Make bucketlist name lower in model
         # Check if bucketlist exists
         bucketlist = Verify.verify_bucketlist_exists(bucketlist_name=bucketlist_data["name"].lower())
         if bucketlist:
