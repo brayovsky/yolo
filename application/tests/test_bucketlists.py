@@ -1,5 +1,6 @@
 import unittest
 from unittest.mock import patch
+import json
 
 from application.tests.base_test import BaseTestCase
 
@@ -10,28 +11,61 @@ class TestCreateBucketlist(BaseTestCase):
         super(TestCreateBucketlist, self).setUp()
         self.url = "/v1/bucketlists"
         self.bucketlist_data = {"name": "before 26"}
+        self.authorization = self.get_authorisation_header()
 
     def test_create_bucketlist_validates_data(self):
+        # Function responsible for validating bucketlist data
+        # is verify_bucketlist_data
+        # Assert it is called with the correct parameters
         with patch("application.main.verify.Verify.verify_bucketlist_details",
                    return_value={"success": True}) as verify_bucketlist_data:
-            authorization = self.get_authorisation_header()
             self.client.post(self.url,
                              data=self.bucketlist_data,
-                             headers={"Authorization": authorization})
+                             headers={"Authorization": self.authorization})
 
             verify_bucketlist_data.assert_called_with(self.bucketlist_data)
 
-    def test_create_bucketlist_rejects_similar_name(self):
-        pass
+    def test_create_bucketlist_checks_similar_name(self):
+        # Function responsible for checking similar names
+        # is verify_bucketlist_exists
+        # Assert it is called with the correct parameters
+        with patch("application.main.verify.Verify.verify_bucketlist_exists",
+                   return_value={"success": True}) as verify_bucketlist_exists:
+            self.client.post(self.url,
+                             data=self.bucketlist_data,
+                             headers={"Authorization": self.authorization})
+
+            verify_bucketlist_exists.assert_called_with(
+                bucketlist_name=self.bucketlist_data["name"])
 
     def test_creates_bucketlist_with_valid_parameters(self):
         # Adds to database
         # Return status is 201
-        pass
+        with patch("application.main.app.Common.add_to_db") as add_to_database:
+            request = self.client.post(self.url,
+                                       data=self.bucketlist_data,
+                                       headers={
+                                           "Authorization": self.authorization}
+                                       )
+            add_to_database.assert_called_once()
+
+            assert request.status_code == 201
+
+    def test_create_bucketlist_api_return(self):
+        request = self.client.post(self.url,
+                                   data=self.bucketlist_data,
+                                   headers={
+                                       "Authorization": self.authorization})
+
+        expected_response = {"bucketlist": self.bucketlist_data["name"]}
+        response = json.loads(request.data)
+
+        self.assertDictEqual(expected_response,
+                             response)
 
 
 class TestRetrieveBucketlists(BaseTestCase):
-    """Tests endpoint for retreiving bucketlists"""
+    """Tests endpoint for retrieving bucketlists"""
     pass
 
 

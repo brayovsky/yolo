@@ -95,7 +95,6 @@ class UserBucketlists(Resource, Common):
     @auth.login_required
     def post(self):
         """Creates a new bucketlist"""
-        print("herre")
         bucketlist_data = {"name": request.form.get("name")}
 
         # Validate user data
