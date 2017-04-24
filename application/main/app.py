@@ -9,7 +9,7 @@ app.config.from_envvar("YOLO_SETTINGS")
 
 # Ignore pep8 to enable cyclic import
 from application.models.models import User, Bucketlists, Items, db
-from application.main.verify import Verify, auth
+from application.main.verify import Verify, BucketListSchema, auth
 
 api = Api(app)
 
@@ -116,11 +116,22 @@ class UserBucketlists(Resource, Common):
         response = {"bucketlist": bucketlist_data["name"]}
         return response, 201
 
-
     @auth.login_required
     def get(self):
         """Retreives all bucketlists"""
-        pass
+
+        # Get all bucketlists
+        bucketlists = Bucketlists.query.filter_by(created_by=g.user.id)
+
+        schema = BucketListSchema()
+        response = []
+
+        for bucketlist in bucketlists:
+            result, errors = schema.dump(bucketlist)
+            response.append(result)
+
+        return response, 200
+
 
 
 class SingleBucketlist(Resource, Common):

@@ -15,16 +15,25 @@ class UserSchema(Schema):
     last_login = fields.DateTime()
 
 
+class ItemsSchema(Schema):
+    id = fields.Int()
+    name = fields.Str()
+    bucketlist = fields.Int()
+    date_created = fields.DateTime()
+    date_modified = fields.DateTime()
+
+
 class BucketListSchema(Schema):
+    id = fields.Int()
     name = fields.Str()
     created_by = fields.Int()
     date_created = fields.DateTime()
     date_modified = fields.DateTime()
-    items = fields.Int()
-
+    items = fields.Nested(ItemsSchema, many=True, exclude=('bucketlist', ))
 
 user_schema = UserSchema()
 bucketlist_schema = BucketListSchema()
+items_schema = ItemsSchema()
 
 
 class Verify:
