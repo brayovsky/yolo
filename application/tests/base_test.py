@@ -21,7 +21,7 @@ class BaseTestCase(TestCase):
         db.session.add(self.bob)
         db.session.commit()
 
-        self.bob = User.query.filter_by(username="Bob").first()
+        self.bob = User.query.filter_by(username="bob").first()
         self.bob.raw_password = "password"
 
         # Add a bucketlist to Bob
@@ -44,13 +44,6 @@ class BaseTestCase(TestCase):
         db.drop_all()
 
     def get_authorisation_header(self):
-        # Log in bob
-        # acqujre token and base 64 encode it.
-        # set the encoded token in authorisation header
-        s = Serializer(app.config['SECRET_KEY'], expires_in=600)
-        token = s.dumps({'id': self.bob.id})
-
-        # decode from bytes to string
-        header = "Basic " + b64encode(token).decode()
-        return header
+        return {"username": self.bob.username,
+                "password": self.bob.raw_password}
 

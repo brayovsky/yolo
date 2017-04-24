@@ -119,7 +119,6 @@ class UserBucketlists(Resource, Common):
     @auth.login_required
     def get(self):
         """Retreives all bucketlists"""
-
         # Get all bucketlists
         bucketlists = Bucketlists.query.filter_by(created_by=g.user.id)
 
