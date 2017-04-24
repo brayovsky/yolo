@@ -97,6 +97,7 @@ class UserBucketlists(Resource, Common):
         """Creates a new bucketlist"""
         pass
 
+
     @auth.login_required
     def get(self):
         """Retreives all bucketlists"""
