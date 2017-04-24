@@ -18,22 +18,24 @@ class TestRegister(BaseTestCase):
         # Function verify_user_data validates user data
         # Check if verify_user_data was called
 
-        Verify.verify_user_details = MagicMock()
-        self.client.post(self.url,
-                         data=self.user_data)
+        with patch('application.main.verify.Verify.verify_user_details',
+                   return_value={"success": True}) as verify_user_details:
+            self.client.post(self.url,
+                             data=self.user_data)
 
-        Verify.verify_user_details.assert_called_with(self.user_data)
+            verify_user_details.assert_called_with(self.user_data)
 
     def test_register_checks_user_exists(self):
         # Function verify_user will check if user exists
         # Assert verify_user was called
 
-        Verify.verify_user = MagicMock()
-        self.client.post(self.url,
-                         data=self.user_data)
+        with patch('application.main.verify.Verify.verify_user',
+                   return_value=False) as verify_user:
+            self.client.post(self.url,
+                             data=self.user_data)
 
-        Verify.verify_user.assert_called_with(self.user_data["username"],
-                                              self.user_data["password"])
+            verify_user.assert_called_with(self.user_data["username"],
+                                           self.user_data["password"])
 
     def test_register_api_status_with_valid_data(self):
         # Check status code
@@ -78,10 +80,9 @@ class TestLogIn(BaseTestCase):
 
         with patch('application.main.verify.Verify.verify_login',
                    return_value=self.bob) as verify_login_mock:
-            # assign User object a token to prevent raising an
+            # Assign User object a token to prevent raising an
             # AttributeError in the main code
             self.bob.token = "randomstring"
-            # Verify.verify_login = Mock(return_value=self.bob)
             self.client.post(self.url,
                              data=self.user_data)
 
@@ -98,7 +99,7 @@ class TestLogIn(BaseTestCase):
 
     def test_login_status_with_invalid_credentials(self):
         users_data = {"username": "fdghgkjk",
-                     "password": "jhjk"}
+                      "password": "jhjk"}
         response = self.client.post(self.url,
                                     data=users_data)
 
