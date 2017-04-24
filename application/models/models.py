@@ -49,7 +49,7 @@ class User(db.Model):
 
     def __init__(self, username, email, password):
         # assert correct number of characters
-        self.username = username
+        self.username = username.lower()
         self.email = email
         self.password = self.hash_password(password)
         self.date_created = datetime.now()
@@ -75,7 +75,7 @@ class Bucketlists(db.Model):
 
     def __init__(self, name, created_by):
         # assert correct number of characters
-        self.name = name
+        self.name = name.lower()
         self.created_by = created_by
         self.date_created = datetime.now()
 
@@ -95,7 +95,7 @@ class Items(db.Model):
 
     def __init__(self, name, bucketlist):
         # assert correct number of characters
-        self.name = name
+        self.name = name.lower()
         self.bucketlist = bucketlist
         self.date_created = datetime.now()
 
