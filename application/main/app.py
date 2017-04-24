@@ -95,7 +95,26 @@ class UserBucketlists(Resource, Common):
     @auth.login_required
     def post(self):
         """Creates a new bucketlist"""
-        pass
+        bucketlist_data = {"name": request.form.get("name")}
+
+        # Validate user data
+        verify_data = Verify.verify_bucketlist_details(bucketlist_data)
+        if not verify_data["success"]:
+            return verify_data["errors"], 400
+
+        # Make bucketlist name lower in model
+        # Check if bucketlist exists
+        bucketlist = Verify.verify_bucketlist_exists(bucketlist_name=bucketlist_data["name"].lower())
+        if bucketlist:
+            return {"name": "The bucketlist '{}' already exists".format(bucketlist_data["name"])}, 400
+
+        # Create bucketlist
+        new_bucketlist = Bucketlists(bucketlist_data["name"],
+                                     g.user.id)
+        self.add_to_db(new_bucketlist)
+
+        response = {"bucketlist": bucketlist_data["name"]}
+        return response, 201
 
 
     @auth.login_required

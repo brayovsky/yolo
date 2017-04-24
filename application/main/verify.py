@@ -33,7 +33,16 @@ class Verify:
     def verify_bucketlist_exists(bucketlist_id=None, bucketlist_name=None,
                                  abort=False):
         """Verify bucketlist id or name exists in db"""
-        pass
+        if bucketlist_id:
+            bucketlist = Bucketlists.query.get(bucketlist_id)
+        elif bucketlist_name:
+            bucketlist = Bucketlists.query.filter_by(name=bucketlist_name).first()
+        else:
+            raise TypeError("bucketlist_id or bucketlist_name arguments missing")
+
+        if not bucketlist:
+            return False
+        return bucketlist
 
     @staticmethod
     def verify_item_exists(item_id=None, item_name=None,
@@ -54,6 +63,7 @@ class Verify:
             user = User.query.filter_by(username=username_or_token).first()
             if not user or not user.verify_password(password):
                 return False
+        g.user = user
         return True
 
     @staticmethod
