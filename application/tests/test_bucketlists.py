@@ -2,7 +2,7 @@ import unittest
 from unittest.mock import patch
 import json
 
-from application.tests.base_test import BaseTestCase
+from application.tests.base_test import BaseTestCase, db, Bucketlists
 
 
 class TestCreateBucketlist(BaseTestCase):
@@ -66,7 +66,23 @@ class TestCreateBucketlist(BaseTestCase):
 
 class TestRetrieveBucketlists(BaseTestCase):
     """Tests endpoint for retrieving bucketlists"""
-    pass
+    def setUp(self):
+        super(TestRetrieveBucketlists, self).setUp()
+        self.url = "/v1/bucketlists"
+        self.authorization = self.get_authorisation_header()
+
+    def test_retrieve_gets_users_bucketlists_only(self):
+        # Add Bucketlist
+        new_bucketlist = Bucketlists("at 60", 2)
+        db.session.add(new_bucketlist)
+        db.session.commit()
+        request = self.client.get(self.url,
+                                  headers={
+                                      "Authorization": self.authorization})
+        bucketlists = json.loads(request.data)
+
+        for bucketlist in bucketlists:
+            assert bucketlist["created_by"] == self.bob.id
 
 
 if __name__ == '__main__':
