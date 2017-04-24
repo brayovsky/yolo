@@ -1,8 +1,8 @@
 import unittest
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, patch
 import json
 
-from application.tests.base_test import BaseTestCase
+from application.tests.base_test import BaseTestCase, User
 from application.main.verify import Verify
 
 
@@ -61,45 +61,49 @@ class TestLogIn(BaseTestCase):
                           "password": "cheers"}
         self.url = "/v1/auth/login"
 
-    ## Commented tests are using magicmock which causes
-    ## unwanted errors because when using magicmock,
-    ## the function is not executed and any assignment
-    ## to the function copies the magicmock object
+    def test_login_validates_data(self):
+        # Function verify_user_data validates user data
+        # Check if verify_user_data was called
 
-    # def test_login_validates_data(self):
-    #     # Function verify_user_data validates user data
-    #     # Check if verify_user_data was called
-    #
-    #     Verify.verify_user_details = MagicMock()
-    #     self.client.post(self.url,
-    #                      data=self.user_data)
-    #
-    #     # Verify.verify_user_details.assert_called_with(self.user_data)
-    #
-    # def test_login_checks_user_exists(self):
-    #     # Function verify_login will check if user exists and log in
-    #     # Assert verify_user was called
-    #
-    #     Verify.verify_login = MagicMock()
-    #     self.client.post(self.url,
-    #                      data=self.user_data)
-    #
-    #     # Verify.verify_login.assert_called_with(self.user_data["username"],
-    #     #                                        self.user_data["password"])
+        with patch('application.main.verify.Verify.verify_user_details',
+                   return_value={"success": True}) as verify_user_details:
+            self.client.post(self.url,
+                             data=self.user_data)
+
+            verify_user_details.assert_called_with(self.user_data)
+
+    def test_login_checks_user_exists(self):
+        # Function verify_login will check if user exists and log in
+        # Assert verify_user was called
+
+        with patch('application.main.verify.Verify.verify_login',
+                   return_value=self.bob) as verify_login_mock:
+            # assign User object a token to prevent raising an
+            # AttributeError in the main code
+            self.bob.token = "randomstring"
+            # Verify.verify_login = Mock(return_value=self.bob)
+            self.client.post(self.url,
+                             data=self.user_data)
+
+            verify_login_mock.assert_called_with(self.user_data["username"],
+                                                   self.user_data["password"])
 
     def test_login_status_with_valid_credentials(self):
         user_data = {"username": self.bob.username,
                      "password": self.bob.raw_password}
         response = self.client.post(self.url,
-                                   data=user_data)
+                                    data=user_data)
 
         assert response.status_code == 200
 
     def test_login_status_with_invalid_credentials(self):
+        users_data = {"username": "fdghgkjk",
+                     "password": "jhjk"}
         response = self.client.post(self.url,
-                                    data=self.user_data)
+                                    data=users_data)
 
         assert response.status_code == 401
+
 
 if __name__ == "__main__":
     unittest.main()
