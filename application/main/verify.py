@@ -43,9 +43,11 @@ class Verify:
                                  abort=False):
         """Verify bucketlist id or name exists in db"""
         if bucketlist_id:
-            bucketlist = Bucketlists.query.get(bucketlist_id)
+            bucketlist = Bucketlists.query.filter_by(id=bucketlist_id,
+                                                     created_by=g.user.id)
         elif bucketlist_name:
-            bucketlist = Bucketlists.query.filter_by(name=bucketlist_name).first()
+            bucketlist = Bucketlists.query.filter_by(name=bucketlist_name,
+                                                     created_by=g.user.id).first()
         else:
             raise TypeError("bucketlist_id or bucketlist_name arguments missing")
 
