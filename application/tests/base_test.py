@@ -1,4 +1,8 @@
 from unittest import TestCase
+from base64 import b64encode
+
+from itsdangerous import (TimedJSONWebSignatureSerializer
+                          as Serializer, BadSignature, SignatureExpired)
 
 from application.main.app import User, Bucketlists, Items, db, app
 
@@ -17,7 +21,7 @@ class BaseTestCase(TestCase):
         db.session.add(self.bob)
         db.session.commit()
 
-        self.bob = User.query.filter_by(username="Bob").first()
+        self.bob = User.query.filter_by(username="bob").first()
         self.bob.raw_password = "password"
 
         # Add a bucketlist to Bob
@@ -38,4 +42,9 @@ class BaseTestCase(TestCase):
         super(BaseTestCase, self).tearDown()
         db.session.remove()
         db.drop_all()
+
+    def get_authorisation_header(self):
+        auth_string = self.bob.username + ":" + self.bob.raw_password
+        header = "Basic " + b64encode(auth_string.encode()).decode()
+        return header
 

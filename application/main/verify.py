@@ -14,7 +14,26 @@ class UserSchema(Schema):
     date_created = fields.DateTime()
     last_login = fields.DateTime()
 
+
+class ItemsSchema(Schema):
+    id = fields.Int()
+    name = fields.Str()
+    bucketlist = fields.Int()
+    date_created = fields.DateTime()
+    date_modified = fields.DateTime()
+
+
+class BucketListSchema(Schema):
+    id = fields.Int()
+    name = fields.Str()
+    created_by = fields.Int()
+    date_created = fields.DateTime()
+    date_modified = fields.DateTime()
+    items = fields.Nested(ItemsSchema, many=True, exclude=('bucketlist', ))
+
 user_schema = UserSchema()
+bucketlist_schema = BucketListSchema()
+items_schema = ItemsSchema()
 
 
 class Verify:
@@ -23,7 +42,16 @@ class Verify:
     def verify_bucketlist_exists(bucketlist_id=None, bucketlist_name=None,
                                  abort=False):
         """Verify bucketlist id or name exists in db"""
-        pass
+        if bucketlist_id:
+            bucketlist = Bucketlists.query.get(bucketlist_id)
+        elif bucketlist_name:
+            bucketlist = Bucketlists.query.filter_by(name=bucketlist_name).first()
+        else:
+            raise TypeError("bucketlist_id or bucketlist_name arguments missing")
+
+        if not bucketlist:
+            return False
+        return bucketlist
 
     @staticmethod
     def verify_item_exists(item_id=None, item_name=None,
@@ -44,6 +72,7 @@ class Verify:
             user = User.query.filter_by(username=username_or_token).first()
             if not user or not user.verify_password(password):
                 return False
+        g.user = user
         return True
 
     @staticmethod
@@ -59,6 +88,14 @@ class Verify:
     def verify_user_details(user_data):
         """Verify user information using UserSchema"""
         data, errors = user_schema.load(user_data)
+        if errors:
+            return {"success": False,
+                    "errors": errors}
+        return {"success": True}
+
+    @staticmethod
+    def verify_bucketlist_details(bucketlist_data):
+        data, errors = bucketlist_schema.load(bucketlist_data)
         if errors:
             return {"success": False,
                     "errors": errors}
