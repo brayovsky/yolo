@@ -26,7 +26,7 @@ class Common:
     @staticmethod
     def update_db():
         """Commits updated items to the database"""
-        pass
+        db.session.commit()
 
 
 class Login(Resource):
@@ -98,7 +98,7 @@ class UserBucketlists(Resource, Common):
         """Creates a new bucketlist"""
         bucketlist_data = {"name": request.form.get("name")}
 
-        # Validate user data
+        # Validate bucketlist data
         verify_data = Verify.verify_bucketlist_details(bucketlist_data)
         if not verify_data["success"]:
             return verify_data["errors"], 400
@@ -150,17 +150,31 @@ class SingleBucketlist(Resource, Common):
     @auth.login_required
     def put(self, id):
         """Updates a single bucketlist"""
+        bucketlist_data = {"name": request.form.get("name")}
+
+        # Validate bucketlist data
+        verify_data = Verify.verify_bucketlist_details(bucketlist_data)
+        if not verify_data["success"]:
+            return verify_data["errors"], 400
+
         # Verify bucketlist exists
         bucketlist = Verify.verify_bucketlist_exists(bucketlist_id=id)
         if not bucketlist:
             return {"message": "Bucketlist does not exist"}, 404
 
-        # Check put variables
-        # Should only be able to change name
+        # Change data
+        bucketlist.name = bucketlist_data["name"]
+        bucketlist.update_date_modified()
+        self.update_db()
+
+        response, errors = bucketlist_schema.dump(bucketlist)
+
+        return response, 200
 
     @auth.login_required
     def delete(self, id):
         """Deletes a bucketlist"""
+        # Verify bucketlist exists
         pass
 
 
