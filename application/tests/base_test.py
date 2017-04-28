@@ -38,6 +38,8 @@ class BaseTestCase(TestCase):
         db.session.commit()
         self.item = Items.query.filter_by(name="item1").first()
 
+        self.authorization = self.get_authorisation_header()
+
     def tearDown(self):
         super(BaseTestCase, self).tearDown()
         db.session.remove()
