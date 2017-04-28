@@ -42,7 +42,6 @@ class Verify:
     def verify_bucketlist_exists(bucketlist_id=None, bucketlist_name=None,
                                  abort=False):
         """Verify bucketlist id or name exists in db"""
-        print(g.user.id)
         if bucketlist_id:
             bucketlist = Bucketlists.query.filter_by(id=bucketlist_id,
                                                      created_by=g.user.id).first()

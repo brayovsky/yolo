@@ -185,11 +185,15 @@ class SingleBucketlist(Resource, Common):
         if not bucketlist:
             return {"message": "Bucketlist does not exist"}, 404
 
+        # Delete items associated with bucketlist
+        bucketlist_items = Items.query.filter_by(bucketlist=bucketlist.id)
+        for item in bucketlist_items:
+            self.delete_db_record(item)
+
         # Delete bucketlist
-        bucketlist_name = bucketlist.name
         self.delete_db_record(bucketlist)
 
-        return {"message": "Bucketlist successfully deleted".format(bucketlist_name)}, 200
+        return {"message": "Bucketlist successfully deleted"}, 200
 
 
 class NewBucketListItems(Resource, Common):
