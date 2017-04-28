@@ -39,8 +39,7 @@ items_schema = ItemsSchema()
 class Verify:
     """Holds methods for verifying input data from the user"""
     @staticmethod
-    def verify_bucketlist_exists(bucketlist_id=None, bucketlist_name=None,
-                                 abort=False):
+    def verify_bucketlist_exists(bucketlist_id=None, bucketlist_name=None):
         """Verify bucketlist id or name exists in db"""
         if bucketlist_id:
             bucketlist = Bucketlists.query.filter_by(id=bucketlist_id,
@@ -56,10 +55,20 @@ class Verify:
         return bucketlist
 
     @staticmethod
-    def verify_item_exists(item_id=None, item_name=None,
-                           abort=False):
+    def verify_item_exists(bucketlist_id, item_id=None, item_name=None):
         """Verify item_id exists in db"""
-        pass
+        if item_id:
+            item = Items.query.filter_by(id=item_id,
+                                         bucketlist=bucketlist_id).first()
+        elif item_name:
+            item = Items.query.filter_by(name=item_name,
+                                         bucketlist=bucketlist_id).first()
+        else:
+            raise TypeError("bucketlist_id or bucketlist_name arguments missing")
+
+        if not item:
+            return False
+        return item
 
     @staticmethod
     @auth.verify_password
@@ -98,6 +107,14 @@ class Verify:
     @staticmethod
     def verify_bucketlist_details(bucketlist_data):
         data, errors = bucketlist_schema.load(bucketlist_data)
+        if errors:
+            return {"success": False,
+                    "errors": errors}
+        return {"success": True}
+
+    @staticmethod
+    def verify_item_details(item_data):
+        data, errors = items_schema.load(item_data)
         if errors:
             return {"success": False,
                     "errors": errors}

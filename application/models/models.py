@@ -94,7 +94,6 @@ class Items(db.Model):
     date_modified = db.Column(db.DateTime)
 
     def __init__(self, name, bucketlist):
-        # assert correct number of characters
         self.name = name.lower()
         self.bucketlist = bucketlist
         self.date_created = datetime.now()
