@@ -79,5 +79,44 @@ class TestCreateNewItem(BaseTestCase):
         assert request.status_code == 201
 
 
+class TestEditItem(BaseTestCase):
+    def test_put_verifies_data_sent(self):
+        pass
+
+    def test_put_checks_bucketlist_exists(self):
+        pass
+
+    def test_put_checks_item_exists(self):
+        pass
+
+    def test_put_api_with_missing_data(self):
+        pass
+
+    def test_put_api_with_invalid_bucketlist(self):
+        pass
+
+    def test_put_api_with_invalid_item(self):
+        pass
+
+    def test_put_api_with_valid_data(self):
+        pass
+
+
+class TestDeleteItem(BaseTestCase):
+    def test_delete_checks_bucketlist_exists(self):
+        pass
+
+    def test_delete_checks_item_exists(self):
+        pass
+
+    def test_delete_api_with_invalid_bucketlist(self):
+        pass
+
+    def test_delete_api_with_invalid_item(self):
+        pass
+
+    def test_delete_api_with_valid_data(self):
+        pass
+
 if __name__ == '__main__':
     unittest.main()
