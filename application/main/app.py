@@ -24,6 +24,12 @@ class Common:
         db.session.commit()
 
     @staticmethod
+    def delete_db_record(model_obj):
+        """Deletes a record in the database"""
+        db.session.delete(model_obj)
+        db.session.commit()
+
+    @staticmethod
     def update_db():
         """Commits updated items to the database"""
         db.session.commit()
@@ -175,7 +181,15 @@ class SingleBucketlist(Resource, Common):
     def delete(self, id):
         """Deletes a bucketlist"""
         # Verify bucketlist exists
-        pass
+        bucketlist = Verify.verify_bucketlist_exists(bucketlist_id=id)
+        if not bucketlist:
+            return {"message": "Bucketlist does not exist"}, 404
+
+        # Delete bucketlist
+        bucketlist_name = bucketlist.name
+        self.delete_db_record(bucketlist)
+
+        return {"message": "Bucketlist successfully deleted".format(bucketlist_name)}, 200
 
 
 class NewBucketListItems(Resource, Common):
