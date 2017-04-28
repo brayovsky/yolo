@@ -12,6 +12,7 @@ from application.models.models import User, Bucketlists, Items, db
 from application.main.verify import Verify, BucketListSchema, auth
 
 api = Api(app)
+bucketlist_schema = BucketListSchema()
 
 
 class Common:
@@ -120,12 +121,10 @@ class UserBucketlists(Resource, Common):
         """Retreives all bucketlists"""
         # Get all bucketlists
         bucketlists = Bucketlists.query.filter_by(created_by=g.user.id)
-
-        schema = BucketListSchema()
         response = []
 
         for bucketlist in bucketlists:
-            result, errors = schema.dump(bucketlist)
+            result, errors = bucketlist_schema.dump(bucketlist)
             response.append(result)
 
         return response, 200
@@ -139,12 +138,25 @@ class SingleBucketlist(Resource, Common):
     @auth.login_required
     def get(self, id):
         """Retreives a single bucketlist and items"""
-        pass
+        # Verify bucketlist exists
+        bucketlist = Verify.verify_bucketlist_exists(bucketlist_id=id)
+        if not bucketlist:
+            return {"message": "Bucketlist does not exist"}, 404
+
+        response, errors = bucketlist_schema.dump(bucketlist)
+
+        return response, 200
 
     @auth.login_required
     def put(self, id):
         """Updates a single bucketlist"""
-        pass
+        # Verify bucketlist exists
+        bucketlist = Verify.verify_bucketlist_exists(bucketlist_id=id)
+        if not bucketlist:
+            return {"message": "Bucketlist does not exist"}, 404
+
+        # Check put variables
+        # Should only be able to change name
 
     @auth.login_required
     def delete(self, id):

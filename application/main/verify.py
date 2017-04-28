@@ -42,9 +42,10 @@ class Verify:
     def verify_bucketlist_exists(bucketlist_id=None, bucketlist_name=None,
                                  abort=False):
         """Verify bucketlist id or name exists in db"""
+        print(g.user.id)
         if bucketlist_id:
             bucketlist = Bucketlists.query.filter_by(id=bucketlist_id,
-                                                     created_by=g.user.id)
+                                                     created_by=g.user.id).first()
         elif bucketlist_name:
             bucketlist = Bucketlists.query.filter_by(name=bucketlist_name,
                                                      created_by=g.user.id).first()
@@ -71,7 +72,7 @@ class Verify:
         user = User.verify_auth_token(username_or_token)
         if not user:
             # try to authenticate by username and password
-            user = User.query.filter_by(username=username_or_token).first()
+            user = User.query.get(username=username_or_token)
             if not user or not user.verify_password(password):
                 return False
         g.user = user
@@ -80,7 +81,7 @@ class Verify:
     @staticmethod
     def verify_login(username, password):
         """Verify login details are correct"""
-        user = User.query.filter_by(username=username).first()
+        user = User.query.get(username=username)
         if not user or not user.verify_password(password):
             return False
         user.token = user.generate_auth_token()
