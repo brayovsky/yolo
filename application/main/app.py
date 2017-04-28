@@ -9,10 +9,11 @@ app.config.from_envvar("YOLO_SETTINGS")
 
 # Ignore pep8 to enable cyclic import
 from application.models.models import User, Bucketlists, Items, db
-from application.main.verify import Verify, BucketListSchema, auth
+from application.main.verify import Verify, BucketListSchema, ItemsSchema, auth
 
 api = Api(app)
 bucketlist_schema = BucketListSchema()
+item_schema = ItemsSchema()
 
 
 class Common:
@@ -203,7 +204,33 @@ class NewBucketListItems(Resource, Common):
     @auth.login_required
     def post(self, id):
         """Creates new bucketlist items for a bucketlist"""
-        pass
+        item_data = {"name": request.form.get("name")}
+        # Verify item data
+        item_valid = Verify.verify_item_details(item_data)
+        if not item_valid["success"]:
+            return item_valid["errors"], 400
+
+        # Verify bucketlist exists
+        bucketlist = Verify.verify_bucketlist_exists(bucketlist_id=id)
+        if not bucketlist:
+            return {"message": "Bucketlist does not exist"}, 404
+
+        # Verify name is not a duplicate
+        item_exists = Verify.verify_item_exists(id,
+                                                item_name=item_data["name"])
+        if item_exists:
+            return {"message": "This item already exists in the bucketlist"}, 400
+
+        # Save item
+        item = Items(item_data["name"], bucketlist.id)
+        self.add_to_db(item)
+
+        # Get new item
+        item = Items.query.filter_by(name=item_data["name"],
+                                     bucketlist=bucketlist.id).first()
+        item_return, error = item_schema.dump(item)
+
+        return item_return, 201
 
 
 class BucketListItems(Resource, Common):
