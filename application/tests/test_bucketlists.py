@@ -69,6 +69,10 @@ class TestRetrieveBucketlists(BaseTestCase):
 
     def test_get_gets_users_bucketlists_only(self):
         # Add Bucketlist
+        # Create 2nd user and assign a bucketlist
+        new_user = User("kevin", "kevin@email.com", "password")
+        db.session.add(new_user)
+        db.session.commit()
         new_bucketlist = Bucketlists("at 60", 2)
         db.session.add(new_bucketlist)
         db.session.commit()
