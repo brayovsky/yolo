@@ -1,13 +1,12 @@
 from urllib.parse import urljoin
 
-from flask import Flask, jsonify, request, g
+from flask import Flask, request, g
 from flask_restful import Resource, Api
 
 
 app = Flask(__name__)
 # Load configurations
-app.config.from_object("application.default_settings.DevelopmentConfig")
-app.config.from_envvar("YOLO_SETTINGS")
+app.config.from_object("application.settings.DevelopmentConfig")
 
 # Ignore pep8 to enable cyclic import
 from application.models.models import User, Bucketlists, Items, db

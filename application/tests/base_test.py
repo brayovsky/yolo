@@ -1,17 +1,13 @@
 from unittest import TestCase
 from base64 import b64encode
 
-from itsdangerous import (TimedJSONWebSignatureSerializer
-                          as Serializer, BadSignature, SignatureExpired)
-
 from application.main.app import User, Bucketlists, Items, db, app
 
 
 class BaseTestCase(TestCase):
     def setUp(self):
         super(BaseTestCase, self).setUp()
-        app.config.from_object("application.default_settings.TestingConfig")
-        app.config.from_envvar("YOLO_SETTINGS")
+        app.config.from_object("application.settings.TestingConfig")
         self.app = app.app_context().push()
         self.client = app.test_client()
         db.create_all()
