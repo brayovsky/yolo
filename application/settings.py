@@ -10,7 +10,7 @@ class Config(object):
     # Track modifications might cause significant overhead
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
-    SITE_ROOT = "http://127.0.0.1:5000"
+    SITE_ROOT = os.environ.get("YOLO_SITE_ROOT", "http://127.0.0.1:5000")
 
     DATABASE_URL = None
     if os.environ.get("YOLO_DB") == "sqlite":
