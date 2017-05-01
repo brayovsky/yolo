@@ -35,7 +35,8 @@ class User(db.Model):
         return custom_app_context.verify(password, self.password)
 
     def generate_auth_token(self, expiration=18000):
-        serializer = Serializer(app.config['SECRET_KEY'], expires_in=expiration)
+        serializer = Serializer(app.config['SECRET_KEY'],
+                                expires_in=expiration)
         token = serializer.dumps({'id': self.id})
         return token.decode()
 
