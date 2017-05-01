@@ -4,10 +4,13 @@ from flask_sqlalchemy import SQLAlchemy
 from passlib.apps import custom_app_context
 from itsdangerous import (TimedJSONWebSignatureSerializer
                           as Serializer, BadSignature, SignatureExpired)
+from sqlalchemy_searchable import make_searchable
+from sqlalchemy_utils.types import TSVectorType
 
 from application.main.app import app
 
 db = SQLAlchemy(app)
+make_searchable()
 
 
 class User(db.Model):
@@ -62,13 +65,14 @@ class Bucketlists(db.Model):
     __tablename__ = "bucketlists"
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), unique=True, nullable=False)
+    name = db.Column(db.UnicodeText, unique=True, nullable=False)
     created_by = db.Column(db.Integer, db.ForeignKey("users.id"),
                            nullable=False)
     date_created = db.Column(db.DateTime, nullable=False)
     date_modified = db.Column(db.DateTime)
     items = db.relationship("Items", backref="bucket",
                             lazy="dynamic")
+    search_vector = db.Column(TSVectorType('name'))
 
     def update_date_modified(self):
         self.date_modified = datetime.now()
