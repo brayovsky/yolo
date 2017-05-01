@@ -7,18 +7,24 @@ class Config(object):
     TESTING = False
     CSRF_ENABLED = True
     SECRET_KEY = os.environ.get("YOLO_SECRET_KEY")
-    SQLALCHEMY_DATABASE_URI = "sqlite:///" + \
-                              os.path.join(basedir, "yolo.db")
     # Track modifications might cause significant overhead
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     SITE_ROOT = "http://127.0.0.1:5000"
 
-    if os.environ.get("DB") == "postgres":
-        DATABASE_URL = ""
+    DATABASE_URL = None
+    if os.environ.get("YOLO_DB") == "sqlite":
+        DATABASE_URL = "sqlite:///" + os.path.join(basedir, "yolo.db")
 
-    if os.environ.get("DB") == "mysql":
-        DATABASE_URL = ""
+    if os.environ.get("YOLO_DB") == "postgres":
+        DATABASE_URL = os.environ.get("YOLO_DATABASE_URL")
+
+    if os.environ.get("YOLO_DB") == "mysql":
+        DATABASE_URL = os.environ.get("YOLO_DATABASE_URL")
+
+    # Make an sqlite database by default
+    SQLALCHEMY_DATABASE_URI = DATABASE_URL or \
+        "sqlite:///" + os.path.join(basedir, "yolo.db")
 
 
 class ProductionConfig(Config):
