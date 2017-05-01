@@ -68,7 +68,9 @@ class Bucketlists(db.Model):
     name = db.Column(db.UnicodeText, unique=True, nullable=False)
     created_by = db.Column(db.Integer, db.ForeignKey("users.id"),
                            nullable=False)
-    date_created = db.Column(db.DateTime, nullable=False)
+    date_created = db.Column(db.DateTime,
+                             nullable=False,
+                             default=datetime.now())
     date_modified = db.Column(db.DateTime)
     items = db.relationship("Items", backref="bucket",
                             lazy="dynamic")
@@ -94,7 +96,7 @@ class Items(db.Model):
     name = db.Column(db.String(250), unique=True, nullable=False)
     bucketlist = db.Column(db.Integer, db.ForeignKey("bucketlists.id"),
                            nullable=False)
-    date_created = db.Column(db.DateTime, nullable=False)
+    date_created = db.Column(db.DateTime, nullable=False, default=datetime.now())
     date_modified = db.Column(db.DateTime)
 
     def __init__(self, name, bucketlist):
