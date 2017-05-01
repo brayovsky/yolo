@@ -35,15 +35,16 @@ class User(db.Model):
         return custom_app_context.verify(password, self.password)
 
     def generate_auth_token(self, expiration=18000):
-        s = Serializer(app.config['SECRET_KEY'], expires_in=expiration)
-        token = s.dumps({'id': self.id})
+        serializer = Serializer(app.config['SECRET_KEY'],
+                                expires_in=expiration)
+        token = serializer.dumps({'id': self.id})
         return token.decode()
 
     @staticmethod
     def verify_auth_token(token):
-        s = Serializer(app.config['SECRET_KEY'])
+        serializer = Serializer(app.config['SECRET_KEY'])
         try:
-            data = s.loads(token, return_header=True)
+            data = serializer.loads(token, return_header=True)
         except SignatureExpired:
             return None  # valid token, but expired
         except BadSignature:

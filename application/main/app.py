@@ -74,10 +74,11 @@ class Login(Resource):
                                    user_data["password"])
 
         if not user:
-            return {"message": "Invalid credentials"}, 401
+            return {"authenticated": False}, 401
 
         return {"user": user.username,
-                "token": user.token}, 200
+                "token": user.token,
+                "authenticated": True}, 200
 
 
 class Register(Resource, Common):
@@ -129,8 +130,13 @@ class UserBucketlists(Resource, Common):
             return verify_data["errors"], 400
 
         # Check if bucketlist exists
-        bucketlist = Verify.verify_bucketlist_exists(
-            bucketlist_name=bucketlist_data["name"].lower())
+        try:
+            bucketlist = Verify.verify_bucketlist_exists(
+                bucketlist_name=bucketlist_data["name"].lower())
+        except TypeError:
+            # Bucketlist name was an empty string
+            return {"name": ["Field may not be null."]}, 400
+
         if bucketlist:
             return {"name": "The bucketlist '{}' already exists"
                     .format(bucketlist_data["name"])},\
@@ -142,7 +148,7 @@ class UserBucketlists(Resource, Common):
         self.add_to_db(new_bucketlist)
         # Get created bucketlist from database
         new_bucketlist = Bucketlists.query.filter_by(
-            name=bucketlist_data["name"],
+            name=bucketlist_data["name"].lower(),
             created_by=g.user.id).first()
 
         response, errors = bucketlist_schema.dump(new_bucketlist)
@@ -236,7 +242,7 @@ class SingleBucketlist(Resource, Common):
 
         response, errors = bucketlist_schema.dump(bucketlist)
 
-        return response, 200
+        return response, 201
 
     @auth.login_required
     def delete(self, id):
@@ -287,7 +293,7 @@ class NewBucketListItems(Resource, Common):
         self.add_to_db(item)
 
         # Get new item
-        item = Items.query.filter_by(name=item_data["name"],
+        item = Items.query.filter_by(name=item_data["name"].lower(),
                                      bucketlist=bucketlist.id).first()
         item_return, error = item_schema.dump(item)
 
@@ -331,7 +337,7 @@ class BucketListItems(Resource, Common):
                                      bucketlist=id).first()
         item_return, error = item_schema.dump(item)
 
-        return item_return, 200
+        return item_return, 201
 
     @auth.login_required
     def delete(self, id, item_id):
@@ -354,12 +360,14 @@ class BucketListItems(Resource, Common):
         return {"message": "Item successfully deleted"}, 200
 
 
-api.add_resource(Login, "/auth/login/")
-api.add_resource(Register, "/auth/register/")
-api.add_resource(UserBucketlists, "/bucketlists/")
-api.add_resource(SingleBucketlist, "/bucketlists/<id>/")
-api.add_resource(NewBucketListItems, "/bucketlists/<id>/items/")
-api.add_resource(BucketListItems, "/bucketlists/<id>/items/<item_id>/")
+api.add_resource(Login, "/auth/login/", strict_slashes=False)
+api.add_resource(Register, "/auth/register/", strict_slashes=False)
+api.add_resource(UserBucketlists, "/bucketlists/", strict_slashes=False)
+api.add_resource(SingleBucketlist, "/bucketlists/<id>/", strict_slashes=False)
+api.add_resource(NewBucketListItems, "/bucketlists/<id>/items/",
+                 strict_slashes=False)
+api.add_resource(BucketListItems, "/bucketlists/<id>/items/<item_id>/",
+                 strict_slashes=False)
 
 
 if __name__ == "__main__":

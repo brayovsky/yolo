@@ -189,7 +189,7 @@ class TestUpdateSingleBucketlist(BaseTestCase):
             data=self.bucketlist_data,
             headers={"Authorization": self.authorization})
 
-        assert request.status_code == 200
+        assert request.status_code == 201
 
 
 class TestDeleteSingleBucketlist(BaseTestCase):
