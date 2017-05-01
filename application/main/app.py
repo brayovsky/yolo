@@ -241,7 +241,7 @@ class SingleBucketlist(Resource, Common):
 
         response, errors = bucketlist_schema.dump(bucketlist)
 
-        return response, 200
+        return response, 201
 
     @auth.login_required
     def delete(self, id):
@@ -336,7 +336,7 @@ class BucketListItems(Resource, Common):
                                      bucketlist=id).first()
         item_return, error = item_schema.dump(item)
 
-        return item_return, 200
+        return item_return, 201
 
     @auth.login_required
     def delete(self, id, item_id):
