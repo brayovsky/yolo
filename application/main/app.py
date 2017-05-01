@@ -11,7 +11,7 @@ app.config.from_envvar("YOLO_SETTINGS")
 from application.models.models import User, Bucketlists, Items, db
 from application.main.verify import Verify, BucketListSchema, ItemsSchema, auth
 
-api = Api(app)
+api = Api(app, prefix="/api/v1")
 bucketlist_schema = BucketListSchema()
 item_schema = ItemsSchema()
 
@@ -129,15 +129,21 @@ class UserBucketlists(Resource, Common):
     @auth.login_required
     def get(self):
         """Retreives all bucketlists"""
-        # Get all bucketlists
-        bucketlists = Bucketlists.query.filter_by(created_by=g.user.id)
-        response = []
+        # TODO: Paginate the results
+        # Get page and limit, default is 1 and 20 respectively
+        page = request.args.get("page") or 1
+        limit = request.args.get("limit") or 20
 
-        for bucketlist in bucketlists:
-            result, errors = bucketlist_schema.dump(bucketlist)
-            response.append(result)
+        # Get all paginated bucketlists
+        bucketlists = Bucketlists.query.filter_by(
+            created_by=g.user.id).paginate(page=page, per_page=limit)
 
-        return response, 200
+        for bucketlist in bucketlists.items:
+            print(bucketlist)
+        #     result, errors = bucketlist_schema.dump(bucketlist)
+        #     response.append(result)
+        #
+        # return response, 200
 
 
 
@@ -296,12 +302,12 @@ class BucketListItems(Resource, Common):
         return {"message": "Item successfully deleted"}, 200
 
 
-api.add_resource(Login, "/v1/auth/login")
-api.add_resource(Register, "/v1/auth/register")
-api.add_resource(UserBucketlists, "/v1/bucketlists")
-api.add_resource(SingleBucketlist, "/v1/bucketlists/<id>")
-api.add_resource(NewBucketListItems, "/v1/bucketlists/<id>/items")
-api.add_resource(BucketListItems, "/v1/bucketlists/<id>/items/<item_id>")
+api.add_resource(Login, "/auth/login/")
+api.add_resource(Register, "/auth/register/")
+api.add_resource(UserBucketlists, "/bucketlists/")
+api.add_resource(SingleBucketlist, "/bucketlists/<id>/")
+api.add_resource(NewBucketListItems, "/bucketlists/<id>/items/")
+api.add_resource(BucketListItems, "/bucketlists/<id>/items/<item_id>/")
 
 
 if __name__ == "__main__":
