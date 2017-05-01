@@ -10,7 +10,7 @@ services:
 install:
     - pip install -r requirements.txt
 env:
-
+    - YOLO_SECRET_KEY=randomkeyfortestskfjksfehgs
 before_script:
 
 script:
