@@ -1,8 +1,7 @@
 from urllib.parse import urljoin
 
-from flask import Flask, request, g
+from flask import Flask, request, g, render_template
 from flask_restful import Resource, Api
-from sqlalchemy_searchable import search
 
 app = Flask(__name__)
 # Load configurations
@@ -368,6 +367,12 @@ api.add_resource(NewBucketListItems, "/bucketlists/<id>/items/",
                  strict_slashes=False)
 api.add_resource(BucketListItems, "/bucketlists/<id>/items/<item_id>/",
                  strict_slashes=False)
+
+
+# Normal html response routes
+@app.route("/")
+def show_homepage():
+    return render_template("home.html")
 
 
 if __name__ == "__main__":
