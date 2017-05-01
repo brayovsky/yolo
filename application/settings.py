@@ -43,5 +43,7 @@ class DevelopmentConfig(Config):
 
 class TestingConfig(Config):
     TESTING = True
-    SQLALCHEMY_DATABASE_URI = "sqlite:///" + \
-                              os.path.join(basedir, "yolo_test.db")
+    # Get the test database
+    SQLALCHEMY_DATABASE_URI = os.environ.get(
+        "YOLO_TEST_DATABASE_URL", "sqlite:///" + os.path.join(basedir,
+                                                              "yolo_test.db"))
