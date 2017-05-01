@@ -1,3 +1,5 @@
+from urllib.parse import urljoin
+
 from flask import Flask, jsonify, request, g
 from flask_restful import Resource, Api
 
@@ -34,6 +36,23 @@ class Common:
     def update_db():
         """Commits updated items to the database"""
         db.session.commit()
+
+    @staticmethod
+    def get_int_or_default(val, default):
+        """Used to get an int or default to a value"""
+        if type(default) is not int:
+            raise ValueError("Default value must be an integer")
+
+        try:
+            intval = int(val)
+        except ValueError:
+            # If val say is an inconvertible string
+            intval = default
+        except TypeError:
+            # If val is none
+            intval = default
+
+        return intval
 
 
 class Login(Resource):
@@ -129,22 +148,42 @@ class UserBucketlists(Resource, Common):
     @auth.login_required
     def get(self):
         """Retreives all bucketlists"""
-        # TODO: Paginate the results
         # Get page and limit, default is 1 and 20 respectively
-        page = request.args.get("page") or 1
-        limit = request.args.get("limit") or 20
+        page = self.get_int_or_default(request.args.get("page"), 1)
+        limit = self.get_int_or_default(request.args.get("limit"), 20)
+
+        next_url = None
+        prev_url = None
+        site_root = app.config["SITE_ROOT"]
 
         # Get all paginated bucketlists
         bucketlists = Bucketlists.query.filter_by(
             created_by=g.user.id).paginate(page=page, per_page=limit)
 
-        for bucketlist in bucketlists.items:
-            print(bucketlist)
-        #     result, errors = bucketlist_schema.dump(bucketlist)
-        #     response.append(result)
-        #
-        # return response, 200
+        if bucketlists.has_next:
+            next_url = urljoin(
+                site_root, api.url_for(UserBucketlists,
+                                       page=bucketlists.next_num,
+                                       limit=bucketlists.per_page))
+        if bucketlists.has_prev:
+            prev_url = urljoin(
+                site_root, api.url_for(UserBucketlists,
+                                       page=bucketlists.prev_num,
+                                       limit=bucketlists.per_page))
 
+        response = {"number": bucketlists.total,
+                    "limit": bucketlists.per_page,
+                    "current_page": bucketlists.page,
+                    "pages": bucketlists.pages,
+                    "prev": prev_url,
+                    "next": next_url,
+                    "bucketlists": []}
+
+        for bucketlist in bucketlists.items:
+            result, errors = bucketlist_schema.dump(bucketlist)
+            response["bucketlists"].append(result)
+
+        return response, 200
 
 
 class SingleBucketlist(Resource, Common):
