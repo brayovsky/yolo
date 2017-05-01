@@ -14,7 +14,8 @@ env:
 before_script:
 
 script:
-    - nosetests --with-coverage
+    - pep8 application
+    - nosetests application --with-coverage
 before_install:
 
 after_success:
