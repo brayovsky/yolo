@@ -360,12 +360,14 @@ class BucketListItems(Resource, Common):
         return {"message": "Item successfully deleted"}, 200
 
 
-api.add_resource(Login, "/auth/login/")
-api.add_resource(Register, "/auth/register/")
-api.add_resource(UserBucketlists, "/bucketlists/")
-api.add_resource(SingleBucketlist, "/bucketlists/<id>/")
-api.add_resource(NewBucketListItems, "/bucketlists/<id>/items/")
-api.add_resource(BucketListItems, "/bucketlists/<id>/items/<item_id>/")
+api.add_resource(Login, "/auth/login/", strict_slashes=False)
+api.add_resource(Register, "/auth/register/", strict_slashes=False)
+api.add_resource(UserBucketlists, "/bucketlists/", strict_slashes=False)
+api.add_resource(SingleBucketlist, "/bucketlists/<id>/", strict_slashes=False)
+api.add_resource(NewBucketListItems, "/bucketlists/<id>/items/",
+                 strict_slashes=False)
+api.add_resource(BucketListItems, "/bucketlists/<id>/items/<item_id>/",
+                 strict_slashes=False)
 
 
 if __name__ == "__main__":
