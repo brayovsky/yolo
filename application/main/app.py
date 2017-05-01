@@ -147,7 +147,7 @@ class UserBucketlists(Resource, Common):
         self.add_to_db(new_bucketlist)
         # Get created bucketlist from database
         new_bucketlist = Bucketlists.query.filter_by(
-            name=bucketlist_data["name"],
+            name=bucketlist_data["name"].lower(),
             created_by=g.user.id).first()
 
         response, errors = bucketlist_schema.dump(new_bucketlist)
@@ -292,7 +292,7 @@ class NewBucketListItems(Resource, Common):
         self.add_to_db(item)
 
         # Get new item
-        item = Items.query.filter_by(name=item_data["name"],
+        item = Items.query.filter_by(name=item_data["name"].lower(),
                                      bucketlist=bucketlist.id).first()
         item_return, error = item_schema.dump(item)
 
