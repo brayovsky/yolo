@@ -1,17 +1,17 @@
-from flask import Flask, jsonify, request, g
-from flask_restful import Resource, Api
+from urllib.parse import urljoin
 
+from flask import Flask, request, g
+from flask_restful import Resource, Api
 
 app = Flask(__name__)
 # Load configurations
-app.config.from_object("application.default_settings.DevelopmentConfig")
-app.config.from_envvar("YOLO_SETTINGS")
+app.config.from_object("application.settings.DevelopmentConfig")
 
 # Ignore pep8 to enable cyclic import
 from application.models.models import User, Bucketlists, Items, db
 from application.main.verify import Verify, BucketListSchema, ItemsSchema, auth
 
-api = Api(app)
+api = Api(app, prefix="/api/v1")
 bucketlist_schema = BucketListSchema()
 item_schema = ItemsSchema()
 
@@ -34,6 +34,23 @@ class Common:
     def update_db():
         """Commits updated items to the database"""
         db.session.commit()
+
+    @staticmethod
+    def get_int_or_default(val, default):
+        """Used to get an int or default to a value"""
+        if type(default) is not int:
+            raise ValueError("Default value must be an integer")
+
+        try:
+            intval = int(val)
+        except ValueError:
+            # If val say is an inconvertible string
+            intval = default
+        except TypeError:
+            # If val is none
+            intval = default
+
+        return intval
 
 
 class Login(Resource):
@@ -111,17 +128,21 @@ class UserBucketlists(Resource, Common):
             return verify_data["errors"], 400
 
         # Check if bucketlist exists
-        bucketlist = Verify.verify_bucketlist_exists(bucketlist_name=bucketlist_data["name"].lower())
+        bucketlist = Verify.verify_bucketlist_exists(
+            bucketlist_name=bucketlist_data["name"].lower())
         if bucketlist:
-            return {"name": "The bucketlist '{}' already exists".format(bucketlist_data["name"])}, 400
+            return {"name": "The bucketlist '{}' already exists"
+                    .format(bucketlist_data["name"])},\
+                400
 
         # Create bucketlist
         new_bucketlist = Bucketlists(bucketlist_data["name"],
                                      g.user.id)
         self.add_to_db(new_bucketlist)
         # Get created bucketlist from database
-        new_bucketlist = Bucketlists.query.filter_by(name=bucketlist_data["name"],
-                                                     created_by=g.user.id).first()
+        new_bucketlist = Bucketlists.query.filter_by(
+            name=bucketlist_data["name"],
+            created_by=g.user.id).first()
 
         response, errors = bucketlist_schema.dump(new_bucketlist)
         return response, 201
@@ -129,16 +150,42 @@ class UserBucketlists(Resource, Common):
     @auth.login_required
     def get(self):
         """Retreives all bucketlists"""
-        # Get all bucketlists
-        bucketlists = Bucketlists.query.filter_by(created_by=g.user.id)
-        response = []
+        # Get page and limit, default is 1 and 20 respectively
+        page = self.get_int_or_default(request.args.get("page"), 1)
+        limit = self.get_int_or_default(request.args.get("limit"), 20)
 
-        for bucketlist in bucketlists:
+        next_url = None
+        prev_url = None
+        site_root = app.config["SITE_ROOT"]
+
+        # Get all paginated bucketlists
+        bucketlists = Bucketlists.query.filter_by(
+            created_by=g.user.id).paginate(page=page, per_page=limit)
+
+        if bucketlists.has_next:
+            next_url = urljoin(
+                site_root, api.url_for(UserBucketlists,
+                                       page=bucketlists.next_num,
+                                       limit=bucketlists.per_page))
+        if bucketlists.has_prev:
+            prev_url = urljoin(
+                site_root, api.url_for(UserBucketlists,
+                                       page=bucketlists.prev_num,
+                                       limit=bucketlists.per_page))
+
+        response = {"number": bucketlists.total,
+                    "limit": bucketlists.per_page,
+                    "current_page": bucketlists.page,
+                    "pages": bucketlists.pages,
+                    "prev": prev_url,
+                    "next": next_url,
+                    "bucketlists": []}
+
+        for bucketlist in bucketlists.items:
             result, errors = bucketlist_schema.dump(bucketlist)
-            response.append(result)
+            response["bucketlists"].append(result)
 
         return response, 200
-
 
 
 class SingleBucketlist(Resource, Common):
@@ -222,7 +269,8 @@ class NewBucketListItems(Resource, Common):
         item_exists = Verify.verify_item_exists(id,
                                                 item_name=item_data["name"])
         if item_exists:
-            return {"message": "This item already exists in the bucketlist"}, 400
+            return {"message": "This item already exists in the bucketlist"},\
+                400
 
         # Save item
         item = Items(item_data["name"], bucketlist.id)
@@ -296,12 +344,12 @@ class BucketListItems(Resource, Common):
         return {"message": "Item successfully deleted"}, 200
 
 
-api.add_resource(Login, "/v1/auth/login")
-api.add_resource(Register, "/v1/auth/register")
-api.add_resource(UserBucketlists, "/v1/bucketlists")
-api.add_resource(SingleBucketlist, "/v1/bucketlists/<id>")
-api.add_resource(NewBucketListItems, "/v1/bucketlists/<id>/items")
-api.add_resource(BucketListItems, "/v1/bucketlists/<id>/items/<item_id>")
+api.add_resource(Login, "/auth/login/")
+api.add_resource(Register, "/auth/register/")
+api.add_resource(UserBucketlists, "/bucketlists/")
+api.add_resource(SingleBucketlist, "/bucketlists/<id>/")
+api.add_resource(NewBucketListItems, "/bucketlists/<id>/items/")
+api.add_resource(BucketListItems, "/bucketlists/<id>/items/<item_id>/")
 
 
 if __name__ == "__main__":

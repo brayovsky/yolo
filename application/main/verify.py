@@ -42,13 +42,16 @@ class Verify:
     def verify_bucketlist_exists(bucketlist_id=None, bucketlist_name=None):
         """Verify bucketlist id or name exists in db"""
         if bucketlist_id:
-            bucketlist = Bucketlists.query.filter_by(id=bucketlist_id,
-                                                     created_by=g.user.id).first()
+            bucketlist = Bucketlists.query.filter_by(
+                id=bucketlist_id,
+                created_by=g.user.id).first()
         elif bucketlist_name:
-            bucketlist = Bucketlists.query.filter_by(name=bucketlist_name,
-                                                     created_by=g.user.id).first()
+            bucketlist = Bucketlists.query.filter_by(
+                name=bucketlist_name,
+                created_by=g.user.id).first()
         else:
-            raise TypeError("bucketlist_id or bucketlist_name arguments missing")
+            raise TypeError(
+                "bucketlist_id or bucketlist_name arguments missing")
 
         if not bucketlist:
             return False
@@ -64,7 +67,8 @@ class Verify:
             item = Items.query.filter_by(name=item_name,
                                          bucketlist=bucketlist_id).first()
         else:
-            raise TypeError("bucketlist_id or bucketlist_name arguments missing")
+            raise TypeError(
+                "bucketlist_id or bucketlist_name arguments missing")
 
         if not item:
             return False

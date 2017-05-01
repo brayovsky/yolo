@@ -1,8 +1,5 @@
 language: python
 python:
-  - "2.7"
-  - "3.4"
-  - "3.5"
   - "3.6"
 
 services:
@@ -10,11 +7,12 @@ services:
 install:
     - pip install -r requirements.txt
 env:
-
+    - YOLO_SECRET_KEY=randomkeyfortestskfjksfehgs
 before_script:
 
 script:
-    - nosetests --with-coverage
+    - pep8 application --ignore=E402
+    - nosetests application --with-coverage
 before_install:
 
 after_success:

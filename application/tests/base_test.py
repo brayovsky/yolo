@@ -1,17 +1,13 @@
 from unittest import TestCase
 from base64 import b64encode
 
-from itsdangerous import (TimedJSONWebSignatureSerializer
-                          as Serializer, BadSignature, SignatureExpired)
-
 from application.main.app import User, Bucketlists, Items, db, app
 
 
 class BaseTestCase(TestCase):
     def setUp(self):
         super(BaseTestCase, self).setUp()
-        app.config.from_object("application.default_settings.TestingConfig")
-        app.config.from_envvar("YOLO_SETTINGS")
+        app.config.from_object("application.settings.TestingConfig")
         self.app = app.app_context().push()
         self.client = app.test_client()
         db.create_all()
@@ -29,7 +25,8 @@ class BaseTestCase(TestCase):
 
         db.session.add(self.bucketlist)
         db.session.commit()
-        self.bucketlist = Bucketlists.query.filter_by(name="bucketlist1").first()
+        self.bucketlist = Bucketlists.query.filter_by(
+            name="bucketlist1").first()
 
         # Add items to Bob's bucketlists
         self.item = Items("item1", self.bucketlist.id)
@@ -49,4 +46,3 @@ class BaseTestCase(TestCase):
         auth_string = self.bob.username + ":" + self.bob.raw_password
         header = "Basic " + b64encode(auth_string.encode()).decode()
         return header
-

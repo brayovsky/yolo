@@ -11,7 +11,7 @@ class TestRegister(BaseTestCase):
         self.user_data = {"username": "baba",
                           "password": "cheers",
                           "email": "cheers@baba.com"}
-        self.url = "/v1/auth/register"
+        self.url = "api/v1/auth/register/"
 
     def test_register_validates_data(self):
         # Function verify_user_data validates user data
@@ -60,7 +60,7 @@ class TestLogIn(BaseTestCase):
         super(TestLogIn, self).setUp()
         self.user_data = {"username": "baba",
                           "password": "cheers"}
-        self.url = "/v1/auth/login"
+        self.url = "api/v1/auth/login/"
 
     def test_login_validates_data(self):
         # Function verify_user_data validates user data

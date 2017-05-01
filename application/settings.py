@@ -12,6 +12,8 @@ class Config(object):
     # Track modifications might cause significant overhead
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
+    SITE_ROOT = "http://127.0.0.1:5000"
+
     if os.environ.get("DB") == "postgres":
         DATABASE_URL = ""
 
