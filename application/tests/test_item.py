@@ -155,7 +155,7 @@ class TestEditItem(BaseTestCase):
             data=self.item_data,
             headers={"Authorization": self.authorization})
 
-        assert request.status_code == 200
+        assert request.status_code == 201
 
 
 class TestDeleteItem(BaseTestCase):
