@@ -74,10 +74,11 @@ class Login(Resource):
                                    user_data["password"])
 
         if not user:
-            return {"message": "Invalid credentials"}, 401
+            return {"authenticated": False}, 401
 
         return {"user": user.username,
-                "token": user.token}, 200
+                "token": user.token,
+                "authenticated": True}, 200
 
 
 class Register(Resource, Common):
