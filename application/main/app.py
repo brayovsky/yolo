@@ -129,17 +129,21 @@ class UserBucketlists(Resource, Common):
             return verify_data["errors"], 400
 
         # Check if bucketlist exists
-        bucketlist = Verify.verify_bucketlist_exists(bucketlist_name=bucketlist_data["name"].lower())
+        bucketlist = Verify.verify_bucketlist_exists(
+            bucketlist_name=bucketlist_data["name"].lower())
         if bucketlist:
-            return {"name": "The bucketlist '{}' already exists".format(bucketlist_data["name"])}, 400
+            return {"name": "The bucketlist '{}' already exists"
+                    .format(bucketlist_data["name"])},\
+                   400
 
         # Create bucketlist
         new_bucketlist = Bucketlists(bucketlist_data["name"],
                                      g.user.id)
         self.add_to_db(new_bucketlist)
         # Get created bucketlist from database
-        new_bucketlist = Bucketlists.query.filter_by(name=bucketlist_data["name"],
-                                                     created_by=g.user.id).first()
+        new_bucketlist = Bucketlists.query.filter_by(
+            name=bucketlist_data["name"],
+            created_by=g.user.id).first()
 
         response, errors = bucketlist_schema.dump(new_bucketlist)
         return response, 201
@@ -266,7 +270,8 @@ class NewBucketListItems(Resource, Common):
         item_exists = Verify.verify_item_exists(id,
                                                 item_name=item_data["name"])
         if item_exists:
-            return {"message": "This item already exists in the bucketlist"}, 400
+            return {"message": "This item already exists in the bucketlist"},\
+                   400
 
         # Save item
         item = Items(item_data["name"], bucketlist.id)

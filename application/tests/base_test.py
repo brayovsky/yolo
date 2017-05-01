@@ -25,7 +25,8 @@ class BaseTestCase(TestCase):
 
         db.session.add(self.bucketlist)
         db.session.commit()
-        self.bucketlist = Bucketlists.query.filter_by(name="bucketlist1").first()
+        self.bucketlist = Bucketlists.query.filter_by(
+            name="bucketlist1").first()
 
         # Add items to Bob's bucketlists
         self.item = Items("item1", self.bucketlist.id)
@@ -45,4 +46,3 @@ class BaseTestCase(TestCase):
         auth_string = self.bob.username + ":" + self.bob.raw_password
         header = "Basic " + b64encode(auth_string.encode()).decode()
         return header
-

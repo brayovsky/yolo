@@ -5,9 +5,7 @@ from passlib.apps import custom_app_context
 from itsdangerous import (TimedJSONWebSignatureSerializer
                           as Serializer, BadSignature, SignatureExpired)
 
-
 from application.main.app import app
-
 
 db = SQLAlchemy(app)
 
@@ -19,7 +17,9 @@ class User(db.Model):
     username = db.Column(db.String(80), unique=True, nullable=False)
     email = db.Column(db.String(250), nullable=False)
     password = db.Column(db.String(250), nullable=True)
-    date_created = db.Column(db.DateTime, nullable=False, default=datetime.now())
+    date_created = db.Column(db.DateTime,
+                             nullable=False,
+                             default=datetime.now())
     last_login = db.Column(db.DateTime)
     bucketlists = db.relationship("Bucketlists", backref="owner",
                                   lazy="dynamic")

@@ -22,7 +22,6 @@ class TestCreateNewItem(BaseTestCase):
             verify_item_details.assert_called_with(
                 self.item_data)
 
-
     def test_post_checks_for_duplicate_data(self):
         # Check if verify_item_exists was called
         with patch("application.main.verify.Verify.verify_item_exists",
@@ -54,7 +53,8 @@ class TestCreateNewItem(BaseTestCase):
                                             }
                                    )
         request_response = json.loads(request.data)
-        expected_response = {"message": "This item already exists in the bucketlist"}
+        expected_response = {
+            "message": "This item already exists in the bucketlist"}
         self.assertDictEqual(request_response, expected_response)
 
     def test_post_api_with_non_existent_bucketlist(self):
@@ -118,7 +118,6 @@ class TestEditItem(BaseTestCase):
 
             verify_item_exists.assert_called_with(
                 str(self.bucketlist.id), item_id=str(self.item.id))
-
 
     def test_put_api_with_missing_data(self):
         request = self.client.put(self.url,
