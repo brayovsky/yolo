@@ -57,11 +57,7 @@ class TestCreateBucketlist(BaseTestCase):
                                    headers={
                                        "Authorization": self.authorization})
 
-        expected_response = {"bucketlist": self.bucketlist_data["name"]}
-        response = json.loads(request.data)
-
-        self.assertDictEqual(expected_response,
-                             response)
+        assert request.status_code == 201
 
 
 class TestRetrieveBucketlists(BaseTestCase):
