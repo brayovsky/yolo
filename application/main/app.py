@@ -129,8 +129,13 @@ class UserBucketlists(Resource, Common):
             return verify_data["errors"], 400
 
         # Check if bucketlist exists
-        bucketlist = Verify.verify_bucketlist_exists(
-            bucketlist_name=bucketlist_data["name"].lower())
+        try:
+            bucketlist = Verify.verify_bucketlist_exists(
+                bucketlist_name=bucketlist_data["name"].lower())
+        except TypeError:
+            # Bucketlist name was an empty string
+            return {"name": ["Field may not be null."]}, 400
+
         if bucketlist:
             return {"name": "The bucketlist '{}' already exists"
                     .format(bucketlist_data["name"])},\
