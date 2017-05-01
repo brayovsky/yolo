@@ -3,7 +3,6 @@ from urllib.parse import urljoin
 from flask import Flask, request, g
 from flask_restful import Resource, Api
 
-
 app = Flask(__name__)
 # Load configurations
 app.config.from_object("application.settings.DevelopmentConfig")
@@ -134,7 +133,7 @@ class UserBucketlists(Resource, Common):
         if bucketlist:
             return {"name": "The bucketlist '{}' already exists"
                     .format(bucketlist_data["name"])},\
-                   400
+                400
 
         # Create bucketlist
         new_bucketlist = Bucketlists(bucketlist_data["name"],
@@ -271,7 +270,7 @@ class NewBucketListItems(Resource, Common):
                                                 item_name=item_data["name"])
         if item_exists:
             return {"message": "This item already exists in the bucketlist"},\
-                   400
+                400
 
         # Save item
         item = Items(item_data["name"], bucketlist.id)
