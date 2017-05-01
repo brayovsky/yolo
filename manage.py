@@ -13,13 +13,15 @@ manager.add_command("db", MigrateCommand)
 
 @manager.command
 def create_database():
-    "Creates database tables from sqlalchemy models"
+    """Creates database tables from sqlalchemy models"""
+    # call configure_mappers() for search to work
+    db.configure_mappers()
     db.create_all()
 
 
 @manager.command
 def drop_database():
-    "Drops database tables"
+    """Drops database tables"""
     if yesno("Are you sure you want to lose all your data"):
         db.drop_all()
 
