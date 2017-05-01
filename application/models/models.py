@@ -1,11 +1,12 @@
 from datetime import datetime
 
-from flask_sqlalchemy import SQLAlchemy
+from flask_sqlalchemy import SQLAlchemy, BaseQuery
 from passlib.apps import custom_app_context
 from itsdangerous import (TimedJSONWebSignatureSerializer
                           as Serializer, BadSignature, SignatureExpired)
 from sqlalchemy_searchable import make_searchable
 from sqlalchemy_utils.types import TSVectorType
+from sqlalchemy_searchable import SearchQueryMixin
 
 from application.main.app import app
 
@@ -61,7 +62,12 @@ class User(db.Model):
         return '<User %r>' % self.username
 
 
+class BucketlistsQuery(BaseQuery, SearchQueryMixin):
+    pass
+
+
 class Bucketlists(db.Model):
+    query_class = BucketlistsQuery
     __tablename__ = "bucketlists"
 
     id = db.Column(db.Integer, primary_key=True)

@@ -2,6 +2,7 @@ from urllib.parse import urljoin
 
 from flask import Flask, request, g
 from flask_restful import Resource, Api
+from sqlalchemy_searchable import search
 
 app = Flask(__name__)
 # Load configurations
@@ -153,14 +154,23 @@ class UserBucketlists(Resource, Common):
         # Get page and limit, default is 1 and 20 respectively
         page = self.get_int_or_default(request.args.get("page"), 1)
         limit = self.get_int_or_default(request.args.get("limit"), 20)
+        search_string = request.args.get("q") or False
 
         next_url = None
         prev_url = None
         site_root = app.config["SITE_ROOT"]
 
         # Get all paginated bucketlists
-        bucketlists = Bucketlists.query.filter_by(
-            created_by=g.user.id).paginate(page=page, per_page=limit)
+        if search_string:
+            # Search
+            bucketlists = Bucketlists.query.filter_by(
+                created_by=g.user.id).search(search_string).paginate(
+                page=page,
+                per_page=limit)
+        else:
+            # Get all bucketlists
+            bucketlists = Bucketlists.query.filter_by(
+                created_by=g.user.id).paginate(page=page, per_page=limit)
 
         if bucketlists.has_next:
             next_url = urljoin(
