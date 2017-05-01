@@ -98,5 +98,8 @@ class Items(db.Model):
         self.bucketlist = bucketlist
         self.date_created = datetime.now()
 
+    def update_date_modified(self):
+        self.date_modified = datetime.now()
+
     def __repr__(self):
         return "<Item %r>" % self.name

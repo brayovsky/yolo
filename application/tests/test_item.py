@@ -79,5 +79,139 @@ class TestCreateNewItem(BaseTestCase):
         assert request.status_code == 201
 
 
+class TestEditItem(BaseTestCase):
+    def setUp(self):
+        super(TestEditItem, self).setUp()
+        self.url = "/v1/bucketlists/" + str(self.bucketlist.id) + "/items/" + \
+            str(self.item.id)
+        self.item_data = {"name": "updated name"}
+
+    def test_put_verifies_data_sent(self):
+        # Check if verify_item_details was called
+        with patch("application.main.verify.Verify.verify_item_details",
+                   return_value={"success": True}) as verify_item_details:
+            self.client.put(self.url,
+                            data=self.item_data,
+                            headers={"Authorization": self.authorization})
+
+            verify_item_details.assert_called_with(
+                self.item_data)
+
+    def test_put_checks_bucketlist_exists(self):
+        # Check if verify_bucketlist_exists was called
+        with patch("application.main.verify.Verify.verify_bucketlist_exists",
+                   return_value=False) as verify_bucketlist_exists:
+            self.client.put(self.url,
+                            data=self.item_data,
+                            headers={"Authorization": self.authorization})
+
+            verify_bucketlist_exists.assert_called_with(
+                bucketlist_id=str(self.bucketlist.id))
+
+    def test_put_checks_item_exists(self):
+        # Check if verify_item_exists was called
+        with patch("application.main.verify.Verify.verify_item_exists",
+                   return_value=False) as verify_item_exists:
+            self.client.put(self.url,
+                            data=self.item_data,
+                            headers={"Authorization": self.authorization})
+
+            verify_item_exists.assert_called_with(
+                str(self.bucketlist.id), item_id=str(self.item.id))
+
+
+    def test_put_api_with_missing_data(self):
+        request = self.client.put(self.url,
+                                  headers={"Authorization": self.authorization}
+                                  )
+
+        assert request.status_code == 400
+
+    def test_put_api_with_invalid_bucketlist(self):
+        # Use non existent bucketlist id '4000'
+        request = self.client.put("/v1/bucketlists/4000/items/1",
+                                  data=self.item_data,
+                                  headers={"Authorization": self.authorization}
+                                  )
+        request_response = json.loads(request.data)
+        expexted_response = {"message": "Bucketlist does not exist"}
+
+        self.assertDictEqual(request_response, expexted_response)
+
+    def test_put_api_with_invalid_item(self):
+        # Use non existent item id '4000'
+        request = self.client.put(
+            "/v1/bucketlists/" + str(self.bucketlist.id) + "/items/4000",
+            data=self.item_data,
+            headers={"Authorization": self.authorization})
+
+        request_response = json.loads(request.data)
+        expexted_response = {"message": "Item does not exist"}
+
+        self.assertDictEqual(request_response, expexted_response)
+
+    def test_put_api_with_valid_data(self):
+        request = self.client.put(
+            self.url,
+            data=self.item_data,
+            headers={"Authorization": self.authorization})
+
+        assert request.status_code == 200
+
+
+class TestDeleteItem(BaseTestCase):
+    def setUp(self):
+        super(TestDeleteItem, self).setUp()
+        self.url = "/v1/bucketlists/" + str(self.bucketlist.id) + "/items/" + \
+            str(self.item.id)
+
+    def test_delete_checks_bucketlist_exists(self):
+        # Check if verify_bucketlist_exists was called
+        with patch("application.main.verify.Verify.verify_bucketlist_exists",
+                   return_value=False) as verify_bucketlist_exists:
+            self.client.delete(self.url,
+                               headers={"Authorization": self.authorization})
+
+            verify_bucketlist_exists.assert_called_with(
+                bucketlist_id=str(self.bucketlist.id))
+
+    def test_delete_checks_item_exists(self):
+        # Check if verify_item_exists was called
+        with patch("application.main.verify.Verify.verify_item_exists",
+                   return_value=False) as verify_item_exists:
+            self.client.delete(self.url,
+                               headers={"Authorization": self.authorization})
+
+            verify_item_exists.assert_called_with(
+                str(self.bucketlist.id), item_id=str(self.item.id))
+
+    def test_delete_api_with_invalid_bucketlist(self):
+        # Use non existent bucketlist id '4000'
+        request = self.client.delete(
+            "/v1/bucketlists/4000/items/" + str(self.item.id),
+            headers={"Authorization": self.authorization})
+        request_response = json.loads(request.data)
+        expexted_response = {"message": "Bucketlist does not exist"}
+
+        self.assertDictEqual(request_response, expexted_response)
+
+    def test_delete_api_with_invalid_item(self):
+        # Use non existent item id '4000'
+        request = self.client.delete(
+            "/v1/bucketlists/" + str(self.bucketlist.id) + "/items/4000",
+            headers={"Authorization": self.authorization})
+
+        request_response = json.loads(request.data)
+        expexted_response = {"message": "Item does not exist"}
+
+        self.assertDictEqual(request_response, expexted_response)
+
+    def test_delete_api_with_valid_data(self):
+        request = self.client.delete(
+            self.url,
+            headers={"Authorization": self.authorization})
+
+        assert request.status_code == 200
+
 if __name__ == '__main__':
     unittest.main()

@@ -119,8 +119,11 @@ class UserBucketlists(Resource, Common):
         new_bucketlist = Bucketlists(bucketlist_data["name"],
                                      g.user.id)
         self.add_to_db(new_bucketlist)
+        # Get created bucketlist from database
+        new_bucketlist = Bucketlists.query.filter_by(name=bucketlist_data["name"],
+                                                     created_by=g.user.id).first()
 
-        response = {"bucketlist": bucketlist_data["name"]}
+        response, errors = bucketlist_schema.dump(new_bucketlist)
         return response, 201
 
     @auth.login_required
@@ -238,14 +241,59 @@ class BucketListItems(Resource, Common):
        /bucketlists/<id>/items/<item_id>
     """
     @auth.login_required
-    def put(self, id):
+    def put(self, id, item_id):
         """Updates an item in a bucketlist"""
-        pass
+        item_data = {"name": request.form.get("name")}
+
+        # Verify if data is valid
+        item_data_valid = Verify.verify_item_details(item_data)
+        if not item_data_valid["success"]:
+            return item_data_valid["errors"], 400
+
+        # Verify bucketlist exists
+        bucketlist_exists = Verify.verify_bucketlist_exists(
+            bucketlist_id=id
+        )
+
+        if not bucketlist_exists:
+            return {"message": "Bucketlist does not exist"}, 404
+
+        # Verify item exists
+        item = Verify.verify_item_exists(id, item_id=item_id)
+        if not item:
+            return {"message": "Item does not exist"}, 404
+
+        # Update name
+        item.name = item_data["name"]
+        item.update_date_modified()
+        self.update_db()
+
+        # Get new item
+        item = Items.query.filter_by(name=item_data["name"],
+                                     bucketlist=id).first()
+        item_return, error = item_schema.dump(item)
+
+        return item_return, 200
 
     @auth.login_required
-    def delete(self, id):
+    def delete(self, id, item_id):
         """Deletes an item in a bucketlist"""
-        pass
+        # Verify bucketlist exists
+        bucketlist_exists = Verify.verify_bucketlist_exists(
+            bucketlist_id=id
+        )
+
+        if not bucketlist_exists:
+            return {"message": "Bucketlist does not exist"}, 404
+
+        # Verify item exists
+        item = Verify.verify_item_exists(id, item_id=item_id)
+        if not item:
+            return {"message": "Item does not exist"}, 404
+
+        # Delete item
+        self.delete_db_record(item)
+        return {"message": "Item successfully deleted"}, 200
 
 
 api.add_resource(Login, "/v1/auth/login")
