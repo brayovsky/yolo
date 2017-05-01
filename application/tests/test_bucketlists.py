@@ -9,7 +9,7 @@ class TestCreateBucketlist(BaseTestCase):
     """Tests endpoint for creating bucketlists"""
     def setUp(self):
         super(TestCreateBucketlist, self).setUp()
-        self.url = "/v1/bucketlists"
+        self.url = "api/v1/bucketlists/"
         self.bucketlist_data = {"name": "before 26"}
         self.authorization = self.get_authorisation_header()
 
@@ -64,7 +64,7 @@ class TestRetrieveBucketlists(BaseTestCase):
     """Tests endpoint for retrieving all bucketlists"""
     def setUp(self):
         super(TestRetrieveBucketlists, self).setUp()
-        self.url = "/v1/bucketlists"
+        self.url = "api/v1/bucketlists/"
         self.authorization = self.get_authorisation_header()
 
     def test_get_gets_users_bucketlists_only(self):
@@ -75,7 +75,7 @@ class TestRetrieveBucketlists(BaseTestCase):
         request = self.client.get(self.url,
                                   headers={
                                       "Authorization": self.authorization})
-        bucketlists = json.loads(request.data)
+        bucketlists = json.loads(request.data)["bucketlists"]
 
         for bucketlist in bucketlists:
             assert bucketlist["created_by"] == self.bob.id
@@ -85,7 +85,7 @@ class TestRetrieveSingleBucketlist(BaseTestCase):
     """Test endpoint for retreiving single bucketlist"""
     def setUp(self):
         super(TestRetrieveSingleBucketlist, self).setUp()
-        self.url_prefix = "/v1/bucketlists/"
+        self.url_prefix = "api/v1/bucketlists/"
         self.authorization = self.get_authorisation_header()
 
     def test_get_checks_if_bucketlist_exists(self):
@@ -94,7 +94,7 @@ class TestRetrieveSingleBucketlist(BaseTestCase):
         with patch("application.main.verify.Verify.verify_bucketlist_exists",
                    return_value=False) as verify_bucketlist_exists:
             bucketlist_id = str(self.bucketlist.id)
-            self.client.get(self.url_prefix + bucketlist_id,
+            self.client.get(self.url_prefix + bucketlist_id + "/",
                             headers={"Authorization": self.authorization})
 
             verify_bucketlist_exists.assert_called_with(
@@ -116,14 +116,14 @@ class TestRetrieveSingleBucketlist(BaseTestCase):
         bucketlist_id = str(alice_bucketlist.id)
 
         # Get alice's bucketlist with bob's authorization
-        request = self.client.get(self.url_prefix + bucketlist_id,
+        request = self.client.get(self.url_prefix + bucketlist_id + "/",
                                   headers={"Authorization": self.authorization}
                                   )
         assert request.status_code == 404
 
     def test_get_api_response_with_wrong_parameters(self):
         # Send a bucketlist id that does not exist
-        request = self.client.get(self.url_prefix + "4000",
+        request = self.client.get(self.url_prefix + "4000" + "/",
                                   headers={"Authorization": self.authorization}
                                   )
         # Decode json data
@@ -134,7 +134,7 @@ class TestRetrieveSingleBucketlist(BaseTestCase):
 
     def test_get_api_response_with_valid_parameters(self):
         bucketlist_id = str(self.bucketlist.id)
-        request = self.client.get(self.url_prefix + bucketlist_id,
+        request = self.client.get(self.url_prefix + bucketlist_id + "/",
                                   headers={"Authorization": self.authorization}
                                   )
 
@@ -144,7 +144,7 @@ class TestRetrieveSingleBucketlist(BaseTestCase):
 class TestUpdateSingleBucketlist(BaseTestCase):
     def setUp(self):
         super(TestUpdateSingleBucketlist, self).setUp()
-        self.url_prefix = "/v1/bucketlists/"
+        self.url_prefix = "api/v1/bucketlists/"
         self.authorization = self.get_authorisation_header()
         self.bucketlist_data = {"name": "new name"}
 
@@ -152,7 +152,7 @@ class TestUpdateSingleBucketlist(BaseTestCase):
         # check if verify_bucketlist_data was called
         with patch("application.main.verify.Verify.verify_bucketlist_details",
                    return_value={"success": True}) as verify_bucketlist_data:
-            self.client.put(self.url_prefix + "4000",
+            self.client.put(self.url_prefix + "4000" + "/",
                             data=self.bucketlist_data,
                             headers={"Authorization": self.authorization})
 
@@ -163,7 +163,7 @@ class TestUpdateSingleBucketlist(BaseTestCase):
         with patch("application.main.verify.Verify.verify_bucketlist_exists",
                    return_value=False) as verify_bucketlist_exists:
             bucketlist_id = str(self.bucketlist.id)
-            self.client.put(self.url_prefix + bucketlist_id,
+            self.client.put(self.url_prefix + bucketlist_id + "/",
                             data=self.bucketlist_data,
                             headers={"Authorization": self.authorization})
 
@@ -172,31 +172,33 @@ class TestUpdateSingleBucketlist(BaseTestCase):
 
     def test_api_with_missing_data(self):
         # Test without sending name
-        request = self.client.put(self.url_prefix + str(self.bucketlist.id),
-                                  headers={"Authorization": self.authorization}
-                                  )
+        request = self.client.put(
+            self.url_prefix + str(self.bucketlist.id) + "/",
+            headers={"Authorization": self.authorization})
+
         assert request.status_code == 400
 
     def test_api_with_correct_data(self):
         # Test when sending the correct name
-        request = self.client.put(self.url_prefix + str(self.bucketlist.id),
-                                  data=self.bucketlist_data,
-                                  headers={"Authorization": self.authorization}
-                                  )
+        request = self.client.put(
+            self.url_prefix + str(self.bucketlist.id) + "/",
+            data=self.bucketlist_data,
+            headers={"Authorization": self.authorization})
+
         assert request.status_code == 200
 
 
 class TestDeleteSingleBucketlist(BaseTestCase):
     def setUp(self):
         super(TestDeleteSingleBucketlist, self).setUp()
-        self.url_prefix = "/v1/bucketlists/"
+        self.url_prefix = "api/v1/bucketlists/"
         self.authorization = self.get_authorisation_header()
 
     def test_delete_verifies_bucketlist_exists(self):
         # Check verify bucketlist was called
         with patch("application.main.verify.Verify.verify_bucketlist_exists",
                    return_value=False) as verify_bucketlist_exists:
-            self.client.delete(self.url_prefix + "4000",
+            self.client.delete(self.url_prefix + "4000" + "/",
                                headers={"Authorization": self.authorization})
 
             verify_bucketlist_exists.assert_called_with(bucketlist_id="4000")
@@ -204,7 +206,7 @@ class TestDeleteSingleBucketlist(BaseTestCase):
     def test_delete_api_with_wrong_data(self):
         # Use a non existent id '4000'
         request = self.client.delete(
-            self.url_prefix + "4000",
+            self.url_prefix + "4000" + "/",
             headers={"Authorization": self.authorization})
 
         request_response = json.loads(request.data)
@@ -215,7 +217,7 @@ class TestDeleteSingleBucketlist(BaseTestCase):
     def test_delete_api_with_correct_data(self):
         # Use bucketlist created by Bob
         request = self.client.delete(
-            self.url_prefix + str(self.bucketlist.id),
+            self.url_prefix + str(self.bucketlist.id) + "/",
             headers={"Authorization": self.authorization})
 
         request_response = json.loads(request.data)

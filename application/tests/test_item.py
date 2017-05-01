@@ -8,7 +8,7 @@ from application.tests.base_test import BaseTestCase
 class TestCreateNewItem(BaseTestCase):
     def setUp(self):
         super(TestCreateNewItem, self).setUp()
-        self.url = "/v1/bucketlists/" + str(self.bucketlist.id) + "/items"
+        self.url = "api/v1/bucketlists/" + str(self.bucketlist.id) + "/items/"
         self.item_data = {"name": "new_name"}
 
     def test_post_validates_data(self):
@@ -59,7 +59,7 @@ class TestCreateNewItem(BaseTestCase):
 
     def test_post_api_with_non_existent_bucketlist(self):
         # Use bucketlist id '4000'
-        request = self.client.post("/v1/bucketlists/4000/items",
+        request = self.client.post("api/v1/bucketlists/4000/items/",
                                    data={"name": self.item.name},
                                    headers={"Authorization": self.authorization
                                             }
@@ -82,8 +82,8 @@ class TestCreateNewItem(BaseTestCase):
 class TestEditItem(BaseTestCase):
     def setUp(self):
         super(TestEditItem, self).setUp()
-        self.url = "/v1/bucketlists/" + str(self.bucketlist.id) + "/items/" + \
-            str(self.item.id)
+        self.url = "api/v1/bucketlists/" + str(self.bucketlist.id) + \
+                   "/items/" + str(self.item.id) + "/"
         self.item_data = {"name": "updated name"}
 
     def test_put_verifies_data_sent(self):
@@ -129,7 +129,7 @@ class TestEditItem(BaseTestCase):
 
     def test_put_api_with_invalid_bucketlist(self):
         # Use non existent bucketlist id '4000'
-        request = self.client.put("/v1/bucketlists/4000/items/1",
+        request = self.client.put("api/v1/bucketlists/4000/items/1/",
                                   data=self.item_data,
                                   headers={"Authorization": self.authorization}
                                   )
@@ -141,7 +141,7 @@ class TestEditItem(BaseTestCase):
     def test_put_api_with_invalid_item(self):
         # Use non existent item id '4000'
         request = self.client.put(
-            "/v1/bucketlists/" + str(self.bucketlist.id) + "/items/4000",
+            "api/v1/bucketlists/" + str(self.bucketlist.id) + "/items/4000/",
             data=self.item_data,
             headers={"Authorization": self.authorization})
 
@@ -162,8 +162,8 @@ class TestEditItem(BaseTestCase):
 class TestDeleteItem(BaseTestCase):
     def setUp(self):
         super(TestDeleteItem, self).setUp()
-        self.url = "/v1/bucketlists/" + str(self.bucketlist.id) + "/items/" + \
-            str(self.item.id)
+        self.url = "api/v1/bucketlists/" + str(self.bucketlist.id) + \
+                   "/items/" + str(self.item.id) + "/"
 
     def test_delete_checks_bucketlist_exists(self):
         # Check if verify_bucketlist_exists was called
@@ -188,7 +188,7 @@ class TestDeleteItem(BaseTestCase):
     def test_delete_api_with_invalid_bucketlist(self):
         # Use non existent bucketlist id '4000'
         request = self.client.delete(
-            "/v1/bucketlists/4000/items/" + str(self.item.id),
+            "api/v1/bucketlists/4000/items/" + str(self.item.id) + "/",
             headers={"Authorization": self.authorization})
         request_response = json.loads(request.data)
         expexted_response = {"message": "Bucketlist does not exist"}
@@ -198,7 +198,7 @@ class TestDeleteItem(BaseTestCase):
     def test_delete_api_with_invalid_item(self):
         # Use non existent item id '4000'
         request = self.client.delete(
-            "/v1/bucketlists/" + str(self.bucketlist.id) + "/items/4000",
+            "api/v1/bucketlists/" + str(self.bucketlist.id) + "/items/4000/",
             headers={"Authorization": self.authorization})
 
         request_response = json.loads(request.data)
