@@ -371,8 +371,12 @@ api.add_resource(BucketListItems, "/bucketlists/<id>/items/<item_id>/",
 
 # Normal html response routes
 @app.route("/")
-def show_homepage():
+def show_skeleton():
     return render_template("home.html")
+
+@app.route("/partials/main.html")
+def show_landingpage():
+    return render_template("partials/landingpage.html")
 
 
 if __name__ == "__main__":
