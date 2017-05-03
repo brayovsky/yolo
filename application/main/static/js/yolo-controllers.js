@@ -96,6 +96,7 @@ yoloControllers.controller('MainCtrl', ['$scope','$http','$location',
                 }
             }).then(function success(response) {
             // Switch to dashboard
+            $scope.authToken = response.data.token;
             $location.path('/dashboard');
         },
         function error(response){
@@ -121,7 +122,7 @@ yoloControllers.controller('MainCtrl', ['$scope','$http','$location',
 
 yoloControllers.controller('DashboardCtrl', ['$scope', '$http',
     function DashboardCtrl($scope, $http){
-        $scope.message = 'You made it!!!'
+
     }]);
 
 yoloControllers.filter('capitalize', function() {

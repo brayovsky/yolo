@@ -380,7 +380,8 @@ def show_landingpage():
 
 @app.route("/dashboard")
 def show_dashboard():
-    return render_template("dashboard.html")
+    user = g.user.username or None
+    return render_template("dashboard.html", user=user)
 
 
 @app.route("/partials/bucketlists.html")
