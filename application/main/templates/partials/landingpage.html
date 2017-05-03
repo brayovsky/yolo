@@ -28,12 +28,12 @@
                 <button class="btn btn-primary" id="log-in-btn" ng-click="toggleLogin()">Log in</button>
                 <div class="text-left">
 
-                <p class="text-danger" ng-show="userExists">User already exists, try logging in</p>
                 <form id="loginform" ng-show="showLogin">
                     <div class="form-group">
                         <label for="login-username">Username</label>
                         <input class="form-control" type="text" name="username" id="login-username" placeholder="Username" ng-model="loginUsername" required>
                         <p class="text-danger" ng-repeat="error in errors.loginUsername">{{ error }}</p>
+                        <p class="text-danger" ng-show="userExists">{{ userErrorMessage }}</p>
                     </div>
                     <div class="form-group">
                         <label for="login-password">Password</label>

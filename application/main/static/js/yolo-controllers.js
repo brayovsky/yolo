@@ -2,8 +2,8 @@
 /* Controllers */
 var yoloControllers = angular.module('yoloControllers', []);
 
-yoloControllers.controller('MainCtrl', ['$scope','$http',
-    function MainCtrl($scope, $http) {
+yoloControllers.controller('MainCtrl', ['$scope','$http','$location',
+    function MainCtrl($scope, $http, $location) {
         $scope.appName = 'yolo';
         $scope.showLogin = false;
         $scope.showSignup = false;
@@ -60,6 +60,7 @@ yoloControllers.controller('MainCtrl', ['$scope','$http',
             if (response.status == 400){  // Form errors
                  if (response.data.username){
                     $scope.highlightInput('signup-username');
+                    $scope.errors.signupUsername = response.data.username;
                  }
                  if (response.data.email){
                     $scope.highlightInput('signup-email');
@@ -67,6 +68,7 @@ yoloControllers.controller('MainCtrl', ['$scope','$http',
                  }
                  if (response.data.password){
                     $scope.highlightInput('signup-password');
+                    $scope.errors.signupPassword = response.data.password;
                  }
             }
             else if (response.status == 403){ // User exists
@@ -74,6 +76,8 @@ yoloControllers.controller('MainCtrl', ['$scope','$http',
                 $scope.userExists = true;
                 $scope.showSignup = false;
                 $scope.showLogin = true;
+                $scope.loginUsername = $scope.signupUsername;
+                $scope.userErrorMessage = 'User exists. Could you be trying to log in?';
             }
         });
         };
@@ -92,12 +96,32 @@ yoloControllers.controller('MainCtrl', ['$scope','$http',
                 }
             }).then(function success(response) {
             // Switch to dashboard
-            console.log(response.data)
+            $location.path('/dashboard');
         },
         function error(response){
             // Highlight form errors
+            if (response.status == 400){
+                if (response.data.username){
+                    $scope.highlightInput('login-username');
+                    $scope.errors.loginUsername = response.data.username;
+                 }
+                 if (response.data.password){
+                    $scope.highlightInput('login-password');
+                    $scope.errors.loginPassword = response.data.password;
+                 }
+            }
+
+            // Bad credentials but no form error
+            if (response.status == 404){
+                $scope.userErrorMessage = 'Wrong username or password';
+            }
         });
         };
+    }]);
+
+yoloControllers.controller('DashboardCtrl', ['$scope', '$http',
+    function DashboardCtrl($scope, $http){
+        $scope.message = 'You made it!!!'
     }]);
 
 yoloControllers.filter('capitalize', function() {

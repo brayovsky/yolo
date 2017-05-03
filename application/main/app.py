@@ -372,10 +372,20 @@ api.add_resource(BucketListItems, "/bucketlists/<id>/items/<item_id>/",
 def show_skeleton():
     return render_template("home.html")
 
+
 @app.route("/partials/main.html")
 def show_landingpage():
     return render_template("partials/landingpage.html")
 
+
+@app.route("/dashboard")
+def show_dashboard():
+    return render_template("dashboard.html")
+
+
+@app.route("/partials/bucketlists.html")
+def show_bucketlists():
+    return render_template("partials/bucketlists.html")
 
 if __name__ == "__main__":
     app.run()

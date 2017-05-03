@@ -12,9 +12,9 @@ yoloApp.config(['$routeProvider', '$locationProvider',
         when('/', {
             templateUrl: 'partials/main.html',
             controller: 'MainCtrl' }).
-        when('/show', {
-            templateUrl: 'partials/show.html',
-            controller: 'ShowCtrl'
+        when('/dashboard', {
+            templateUrl: '/partials/bucketlists.html',
+            controller: 'DashboardCtrl'
         });
         $locationProvider.html5Mode(false).hashPrefix('!');
         }]);
