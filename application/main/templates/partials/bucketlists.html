@@ -2,12 +2,15 @@
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
             <div class="row">
-                <div class="col-sm-4"><div class="bucketlist-card">hey</div></div>
-                <div class="col-sm-4"><div class="bucketlist-card">hey</div></div>
-                <div class="col-sm-4"><div class="bucketlist-card">hey</div></div>
-                <div class="col-sm-4"><div class="bucketlist-card">hey</div></div>
+                <div class="col-sm-4" ng-repeat="bucketlist in bucketlists">
+                    <div class="bucketlist-card">
+                        <h3>{{ bucketlist.name }}</h3>
+                        <ul>
+                            <li ng-repeat="item in bucketlist.items">{{ item.name }}</li>
+                        </ul>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-{{ authToken }}
 {% endraw %}

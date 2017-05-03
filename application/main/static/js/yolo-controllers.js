@@ -122,9 +122,8 @@ yoloControllers.controller('MainCtrl', ['$scope','$http','$location','saveAuthTo
 
 yoloControllers.controller('DashboardCtrl', ['$scope', '$http','Bucketlist',
     function DashboardCtrl($scope, $http, Bucketlist){
-        $scope.authToken = 'eknk';
         Bucketlist.get({}, function success(response){
-            console.log(response);
+            $scope.bucketlists = response.bucketlists;
         },
         function error(response){
             console.log(response.data);
