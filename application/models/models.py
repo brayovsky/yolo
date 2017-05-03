@@ -40,6 +40,7 @@ class User(db.Model):
         token = serializer.dumps({'id': self.id})
         return token.decode()
 
+    # TODO: Invalid token is raising an unhandled type error
     @staticmethod
     def verify_auth_token(token):
         serializer = Serializer(app.config['SECRET_KEY'])

@@ -1,9 +1,9 @@
 'use strict';
 /* Controllers */
-var yoloControllers = angular.module('yoloControllers', []);
+var yoloControllers = angular.module('yoloControllers', ['yoloServices']);
 
-yoloControllers.controller('MainCtrl', ['$scope','$http','$location',
-    function MainCtrl($scope, $http, $location) {
+yoloControllers.controller('MainCtrl', ['$scope','$http','$location','saveAuthToken',
+    function MainCtrl($scope, $http, $location, saveAuthToken) {
         $scope.appName = 'yolo';
         $scope.showLogin = false;
         $scope.showSignup = false;
@@ -96,7 +96,7 @@ yoloControllers.controller('MainCtrl', ['$scope','$http','$location',
                 }
             }).then(function success(response) {
             // Switch to dashboard
-            $scope.authToken = response.data.token;
+            saveAuthToken(response.data.token);
             $location.path('/dashboard');
         },
         function error(response){
@@ -120,9 +120,15 @@ yoloControllers.controller('MainCtrl', ['$scope','$http','$location',
         };
     }]);
 
-yoloControllers.controller('DashboardCtrl', ['$scope', '$http',
-    function DashboardCtrl($scope, $http){
-
+yoloControllers.controller('DashboardCtrl', ['$scope', '$http','Bucketlist',
+    function DashboardCtrl($scope, $http, Bucketlist){
+        $scope.authToken = 'eknk';
+        Bucketlist.get({}, function success(response){
+            console.log(response);
+        },
+        function error(response){
+            console.log(response.data);
+        });
     }]);
 
 yoloControllers.filter('capitalize', function() {
