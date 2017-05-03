@@ -15,6 +15,10 @@ yoloApp.config(['$routeProvider', '$locationProvider',
         when('/dashboard', {
             templateUrl: '/partials/bucketlists.html',
             controller: 'DashboardCtrl'
+        }).
+        when('/search',  {
+            templateUrl: '/partials/search.html',
+            controller: 'SearchCtrl'
         });
         $locationProvider.html5Mode(false).hashPrefix('!');
         }]);

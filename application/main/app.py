@@ -378,15 +378,14 @@ def show_landingpage():
     return render_template("partials/landingpage.html")
 
 
-@app.route("/dashboard")
-def show_dashboard():
-    user = g.user.username or None
-    return render_template("dashboard.html", user=user)
-
-
 @app.route("/partials/bucketlists.html")
 def show_bucketlists():
     return render_template("partials/bucketlists.html")
+
+
+@app.route("/partials/search.html")
+def show_search():
+    return render_template("partials/search.html")
 
 if __name__ == "__main__":
     app.run()

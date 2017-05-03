@@ -2,7 +2,19 @@
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
             <div class="row">
-                <div class="col-sm-4" ng-repeat="bucketlist in bucketlists">
+                <div class="col-md-6">
+                    <form class="navbar-form" role="search">
+                        <div class="input-group">
+                            <input class="form-control" placeholder="Search bucketlists" name="search-term" id="bucketlist-search" type="text" ng-model="searchTerm">
+                            <div class="input-group-btn">
+                            <button class="btn btn-default" type="submit" ng-click="searchBucketlists();"><i class="glyphicon glyphicon-search"></i></button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4" ng-repeat="bucketlist in bucketlists">
                     <div class="bucketlist-card">
                         <h3>{{ bucketlist.name }}</h3>
                         <ul>

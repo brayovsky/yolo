@@ -111,28 +111,60 @@ yoloControllers.controller('MainCtrl', ['$scope','$http','$location','saveAuthTo
                     $scope.errors.loginPassword = response.data.password;
                  }
             }
-
             // Bad credentials but no form error
-            if (response.status == 404){
+            else if (response.status == 401){
                 $scope.userErrorMessage = 'Wrong username or password';
+                $scope.userExists = true
             }
+
         });
         };
     }]);
 
-yoloControllers.controller('DashboardCtrl', ['$scope', '$http','Bucketlist',
-    function DashboardCtrl($scope, $http, Bucketlist){
+yoloControllers.controller('DashboardCtrl', ['$scope', '$http','Bucketlist','$location','SharedData',
+    function DashboardCtrl($scope, $http, Bucketlist, $location, SharedData){
         Bucketlist.get({}, function success(response){
             $scope.bucketlists = response.bucketlists;
         },
         function error(response){
             console.log(response.data);
         });
+
+        $scope.searchBucketlists = function(){
+            // send request to search
+            if($scope.searchTerm !== '' && $scope.searchTerm !== undefined){
+                SharedData.setSearchTerm($scope.searchTerm);
+                $location.path('/search');
+            }
+            return
+        };
     }]);
+
+
+yoloControllers.controller('SearchCtrl', ['$scope','SharedData',
+    function($scope, SharedData){
+        $scope.searchTerm = SharedData.getSearchTerm();
+    }
+
+]);
 
 yoloControllers.filter('capitalize', function() {
     return function(input) {
       return (!!input) ? input.charAt(0).toUpperCase() +
       input.substr(1).toLowerCase() : '';
     }
+});
+
+yoloControllers.factory('SharedData', function () {
+    var data = {
+        searchTerm: ''
+    };
+    return {
+        getSearchTerm: function () {
+            return data.searchTerm;
+        },
+        setSearchTerm: function (searchTerm) {
+            data.searchTerm = searchTerm;
+        }
+    };
 });
