@@ -91,6 +91,13 @@ class Verify:
         return True
 
     @staticmethod
+    def check_username_exists(username):
+        user = User.query.filter_by(username=username).first()
+        if user:
+            return True
+        return False
+
+    @staticmethod
     def verify_login(username, password):
         """Verify login details are correct"""
         user = User.query.filter_by(username=username).first()

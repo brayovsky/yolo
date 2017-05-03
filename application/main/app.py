@@ -95,11 +95,9 @@ class Register(Resource, Common):
         if not verify_data["success"]:
             return verify_data["errors"], 400
 
-        # Check user logged in or exists
-        if Verify.verify_user(user_data["username"],
-                              user_data["password"],
-                              ):
-            return {"message": "You are already logged in or user exists"}, 403
+        # Check user exists
+        if Verify.check_username_exists(user_data["username"]):
+            return {"message": "User exists"}, 403
 
         # User passed register him/her
         new_user = User(user_data["username"],
