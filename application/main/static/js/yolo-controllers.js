@@ -128,6 +128,7 @@ yoloControllers.controller('DashboardCtrl', ['$scope', '$http','Bucketlist','$lo
         },
         function error(response){
             console.log(response.data);
+            // Lacks authentication, go back home
         });
 
         $scope.searchBucketlists = function(){
@@ -141,9 +142,12 @@ yoloControllers.controller('DashboardCtrl', ['$scope', '$http','Bucketlist','$lo
     }]);
 
 
-yoloControllers.controller('SearchCtrl', ['$scope','SharedData',
-    function($scope, SharedData){
+yoloControllers.controller('SearchCtrl', ['$scope','SharedData','Bucketlist',
+    function($scope, SharedData, Bucketlist){
         $scope.searchTerm = SharedData.getSearchTerm();
+        Bucketlist.get({q: $scope.searchTerm}, function success(response){
+            $scope.bucketlists = response.bucketlists
+        });
     }
 
 ]);

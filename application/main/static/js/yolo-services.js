@@ -7,8 +7,6 @@ yoloServices.factory('Bucketlist', ['$resource', 'getAuthTokens',
             "http://127.0.0.1:5000/api/v1/bucketlists/",
         {}, {
         get: {method: 'GET', cache: false, isArray: false, headers: { Authorization: 'Basic ' + getAuthTokens() }},
-        add: {method: 'POST', cache: false, isArray: false},
-        update: {method: 'PUT', cache: false, isArray: false}
     });
 }]);
 
