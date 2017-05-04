@@ -35,6 +35,22 @@ yoloServices.factory('SingleBucketlist', ['$resource', 'getAuthTokens',
     }
 ]);
 
+yoloServices.factory('Item', ['$resource', 'getAuthTokens',
+    function ($resource, getAuthTokens) {
+        return $resource(
+            'http://127.0.0.1:5000/api/v1/bucketlists/:bucketlistId/items/',
+            {},{
+            add: {
+                method: 'POST',
+                cache: false,
+                isArray: false,
+                headers: { Authorization: 'Basic ' + getAuthTokens(), 'Content-Type': 'application/x-www-form-urlencoded'}
+            }
+            }
+        );
+    }
+]);
+
 // Store auth tokens
 yoloServices.factory('saveAuthToken',['$cookies',
     function($cookies) {
@@ -64,7 +80,7 @@ yoloServices.factory('deleteAuthToken', ['$cookies',
     function($cookies) {
         return function() {
         if ($cookies.authToken !== '' || $cookies.authToken !== undefined){
-            $cookies.authToken = "";
+            $cookies.authToken = '';
         }
     };
 }]);

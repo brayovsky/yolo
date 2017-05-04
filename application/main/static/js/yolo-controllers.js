@@ -178,14 +178,15 @@ yoloControllers.controller('DashboardCtrl', ['$scope', '$http','Bucketlist','$lo
         };
     }]);
 
-yoloControllers.controller('BucketlistCtrl', ['$scope','$routeParams','SingleBucketlist',
-    function($scope, $routeParams, SingleBucketlist){
+yoloControllers.controller('BucketlistCtrl', ['$scope','$routeParams','SingleBucketlist','Item','$location',
+    function($scope, $routeParams, SingleBucketlist, Item, $location){
         console.log($routeParams);
         // Get the bucketlist
         SingleBucketlist.get({id: $routeParams.id}, function success(response){
             $scope.bucketlist = response
         }, function error(response){
-            console.log(response);
+            // Go back to dashboard,
+            $location.path('/dashboard');
         });
 
         $scope.errors = {
@@ -195,9 +196,21 @@ yoloControllers.controller('BucketlistCtrl', ['$scope','$routeParams','SingleBuc
         $scope.addNewItem = function() {
             // Use item service to add item if name is present
             if($scope.newItemName === '' || $scope.newItemName === undefined) {
-                $scope.errors.itemName.push('Item name cannot be empty');
+                $scope.errors.itemName = ['Item name cannot be empty'];
                 return;
                 }
+            Item.add({bucketlistId: $scope.bucketlist.id}, $.param({name: $scope.newItemName}), function success(response){
+                $scope.bucketlist.items.push(response);
+                $scope.errors.itemName = [];
+            }, function error(response) {
+                // Form errors
+                if (response.status === 400){
+                    $scope.errors.itemName = (response.data.name);
+                }
+                else{
+                    $scope.errors.itemName = ['An error occured and item could not be added. Reload page.'];
+                }
+            });
 
         };
 
