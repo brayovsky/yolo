@@ -272,7 +272,7 @@ class NewBucketListItems(Resource, Common):
         item_valid = Verify.verify_item_details(item_data)
         if not item_valid["success"]:
             return item_valid["errors"], 400
-
+        item_data["name"] = item_data["name"].lower()
         # Verify bucketlist exists
         bucketlist = Verify.verify_bucketlist_exists(bucketlist_id=id)
         if not bucketlist:
@@ -282,7 +282,7 @@ class NewBucketListItems(Resource, Common):
         item_exists = Verify.verify_item_exists(id,
                                                 item_name=item_data["name"])
         if item_exists:
-            return {"message": "This item already exists in the bucketlist"},\
+            return {"name": ["This item already exists in the bucketlist"]},\
                 400
 
         # Save item
