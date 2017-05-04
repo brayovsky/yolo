@@ -387,5 +387,9 @@ def show_bucketlists():
 def show_search():
     return render_template("partials/search.html")
 
+@app.route("/partials/viewbucketlist.html")
+def show_single_bucketlist():
+    return render_template("partials/viewbucketlist.html")
+
 if __name__ == "__main__":
     app.run()

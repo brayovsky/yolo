@@ -124,6 +124,7 @@ yoloControllers.controller('MainCtrl', ['$scope','$http','$location','saveAuthTo
 
 yoloControllers.controller('DashboardCtrl', ['$scope', '$http','Bucketlist','$location','SharedData',
     function DashboardCtrl($scope, $http, Bucketlist, $location, SharedData){
+        // Get all bucketlists
         Bucketlist.get({}, function success(response){
             $scope.bucketlists = response.bucketlists;
         },
@@ -131,6 +132,10 @@ yoloControllers.controller('DashboardCtrl', ['$scope', '$http','Bucketlist','$lo
             console.log(response.data);
             // Lacks authentication, go back home
         });
+        $scope.loadBucketlist = function(){
+//            alert($scope.bucketlistToView)
+            $location.path('/viewbucketlist/1');
+        };
 
         $scope.searchBucketlists = function(){
             // send request to search
@@ -173,6 +178,17 @@ yoloControllers.controller('DashboardCtrl', ['$scope', '$http','Bucketlist','$lo
         };
     }]);
 
+yoloControllers.controller('BucketlistCtrl', ['$scope','$routeParams','SingleBucketlist',
+    function($scope, $routeParams, SingleBucketlist){
+        console.log($routeParams);
+        // Get the bucketlist
+        SingleBucketlist.get({id: $routeParams.id}, function success(response){
+            console.log(response);
+        }, function error(response){
+            console.log(response);
+        });
+    }
+]);
 
 yoloControllers.controller('SearchCtrl', ['$scope','SharedData','Bucketlist',
     function($scope, SharedData, Bucketlist){
