@@ -129,8 +129,8 @@ yoloControllers.controller('DashboardCtrl', ['$scope', '$http','Bucketlist','$lo
             $scope.bucketlists = response.bucketlists;
         },
         function error(response){
-            console.log(response.data);
             // Lacks authentication, go back home
+            $location.path('/')
         });
         $scope.loadBucketlist = function(){
 //            alert($scope.bucketlistToView)
@@ -180,7 +180,6 @@ yoloControllers.controller('DashboardCtrl', ['$scope', '$http','Bucketlist','$lo
 
 yoloControllers.controller('BucketlistCtrl', ['$scope','$routeParams','SingleBucketlist','Item','$location',
     function($scope, $routeParams, SingleBucketlist, Item, $location){
-        console.log($routeParams);
         // Get the bucketlist
         SingleBucketlist.get({id: $routeParams.id}, function success(response){
             $scope.bucketlist = response
