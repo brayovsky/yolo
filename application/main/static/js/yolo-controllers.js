@@ -186,11 +186,19 @@ yoloControllers.controller('BucketlistCtrl', ['$scope','$routeParams','SingleBuc
             $scope.bucketlist = response
         }, function error(response){
             // Go back to dashboard,
+            if (response.status === 400){
+                    $scope.errors.itemName = (response.data.name);
+                }
+            else if (response.status === 401){
+                $scope.isBucketlistPresent = false;
+                $location.path('/');
+            }
             $location.path('/dashboard');
         });
 
         $scope.errors = {
-            itemName: []
+            itemName: [],
+            bucketlistErrors: []
         }
 
         $scope.addNewItem = function() {
@@ -203,15 +211,36 @@ yoloControllers.controller('BucketlistCtrl', ['$scope','$routeParams','SingleBuc
                 $scope.bucketlist.items.push(response);
                 $scope.errors.itemName = [];
             }, function error(response) {
+                // Logged out
+                if (response.status === 401){
+                    $location.path('/');
+                }
                 // Form errors
-                if (response.status === 400){
+                else if (response.status === 400){
                     $scope.errors.itemName = (response.data.name);
                 }
+                // Server errors etc
                 else{
                     $scope.errors.itemName = ['An error occured and item could not be added. Reload page.'];
                 }
             });
 
+        };
+
+        $scope.deleteBucketlist = function(){
+            // Close modal
+            SingleBucketlist.remove({id: $scope.bucketlist.id}, function success(response){
+                // Switch to dashboard
+                $scope.bucketlist = {};
+                $scope.errors.bucketlistErrors = ['Item deleted. Nothing to do here. Reload page.'];
+            }, function error(response){
+                if (response.status === 404){
+                    $scope.errors.bucketlistErrors = [response.data.message];
+                }
+                else{
+                    $scope.errors.bucketlistErrors = ['An error occured while deleting. Reload page'];
+                }
+            });
         };
 
     }

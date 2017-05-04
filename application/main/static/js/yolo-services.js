@@ -29,6 +29,12 @@ yoloServices.factory('SingleBucketlist', ['$resource', 'getAuthTokens',
             cache: false,
             isArray: false,
             headers: { Authorization: 'Basic ' + getAuthTokens()}
+        },
+        remove: {
+            method: 'DELETE',
+            cache: false,
+            isArray: false,
+            headers: { Authorization: 'Basic ' + getAuthTokens()}
         }
         }
         );
