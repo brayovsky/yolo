@@ -2,8 +2,8 @@
 /* Controllers */
 var yoloControllers = angular.module('yoloControllers', ['yoloServices']);
 
-yoloControllers.controller('MainCtrl', ['$scope','$http','$location','saveAuthToken',
-    function MainCtrl($scope, $http, $location, saveAuthToken) {
+yoloControllers.controller('MainCtrl', ['$scope','$http','$location','saveAuthToken','deleteAuthToken',
+    function MainCtrl($scope, $http, $location, saveAuthToken, deleteAuthToken) {
         $scope.appName = 'yolo';
         $scope.showLogin = false;
         $scope.showSignup = false;
@@ -95,7 +95,8 @@ yoloControllers.controller('MainCtrl', ['$scope','$http','$location','saveAuthTo
                 'Content-Type': 'application/x-www-form-urlencoded'
                 }
             }).then(function success(response) {
-            // Switch to dashboard
+            // Delete existing tokens, save new ones, switch to dashboard
+            deleteAuthToken();
             saveAuthToken(response.data.token);
             $location.path('/dashboard');
         },
@@ -133,11 +134,42 @@ yoloControllers.controller('DashboardCtrl', ['$scope', '$http','Bucketlist','$lo
 
         $scope.searchBucketlists = function(){
             // send request to search
-            if($scope.searchTerm !== '' && $scope.searchTerm !== undefined){
+            if($scope.searchTerm !== '' || $scope.searchTerm !== undefined){
                 SharedData.setSearchTerm($scope.searchTerm);
                 $location.path('/search');
             }
-            return
+            return;
+        };
+
+        $scope.showBucketlistForm = false;
+        $scope.toggleBucketlistForm = function(){
+            $scope.showBucketlistForm = !$scope.showBucketlistForm;
+        };
+        $scope.errors = {
+            bucketlistName: []
+        };
+        $scope.createBucketlist = function(){
+            if($scope.bucketlistName === '' || $scope.bucketlistName === undefined){
+                // Add errors
+                $scope.errors.bucketlistName.push('Name cannot be empty');
+                return;
+            }
+            // Post to API
+            Bucketlist.create({}, $.param({ 'name': $scope.bucketlistName }), function success(response){
+                // Add new bucketlist
+                $scope.bucketlists.push(response);
+            }, function error(response){
+                if (response.status == 400){ // Form errors
+                    for (var i=0;i<response.data.name.length;i++){
+                        $scope.errors.bucketlistName.push(response.data.name[i]);
+                    }
+                }
+                else if (response.status == 403){
+                    // Lacks authentication, go home
+                    $location.path("/");
+                }
+
+            });
         };
     }]);
 

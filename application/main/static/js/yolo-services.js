@@ -6,7 +6,16 @@ yoloServices.factory('Bucketlist', ['$resource', 'getAuthTokens',
         return $resource(
             "http://127.0.0.1:5000/api/v1/bucketlists/",
         {}, {
-        get: {method: 'GET', cache: false, isArray: false, headers: { Authorization: 'Basic ' + getAuthTokens() }},
+        get: {
+            method: 'GET',
+            cache: false,
+            isArray: false,
+            headers: { Authorization: 'Basic ' + getAuthTokens() }},
+        create: {
+            method: 'POST',
+            cache: false,
+            isArray: false,
+            headers: { Authorization: 'Basic ' + getAuthTokens(), 'Content-Type': 'application/x-www-form-urlencoded'}}
     });
 }]);
 
@@ -32,9 +41,11 @@ yoloServices.factory('getAuthTokens', ['$cookies',
     }]);
 
 // Delete auth credentials
-yoloServices.factory('deleteAuthTokens', ['$cookies',
+yoloServices.factory('deleteAuthToken', ['$cookies',
     function($cookies) {
         return function() {
-        $cookies.authToken = "";
+        if ($cookies.authToken !== '' || $cookies.authToken !== undefined){
+            $cookies.authToken = "";
+        }
     };
 }]);

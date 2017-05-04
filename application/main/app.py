@@ -135,8 +135,8 @@ class UserBucketlists(Resource, Common):
             return {"name": ["Field may not be null."]}, 400
 
         if bucketlist:
-            return {"name": "The bucketlist '{}' already exists"
-                    .format(bucketlist_data["name"])},\
+            return {"name": ["The bucketlist '{}' already exists".format(bucketlist_data["name"])]
+                    },\
                 400
 
         # Create bucketlist
