@@ -24,7 +24,10 @@ yoloServices.factory('saveAuthToken',['$cookies',
     function($cookies) {
         return function(token) {
         var encodedToken = btoa(token + ':');
-        $cookies.authToken = encodedToken;
+//        $cookies.authToken = encodedToken;
+        var now = new Date()
+        var expiryDate = new Date(now.getFullYear(), now.getMonth()+12, now.getDate());
+        $cookies.put('authToken', encodedToken, {expires: expiryDate})
     };
 }]);
 
@@ -32,8 +35,11 @@ yoloServices.factory('saveAuthToken',['$cookies',
 yoloServices.factory('getAuthTokens', ['$cookies',
     function($cookies) {
         return function() {
-            var authentication = $cookies.authToken;
+            alert("caled")
+            var authentication = $cookies.get("authToken");
+            alert(authentication)
             if (authentication !== undefined && authentication !== "") {
+            alert(authentication)
                 return authentication;
             }
             return "";
