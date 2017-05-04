@@ -183,10 +183,24 @@ yoloControllers.controller('BucketlistCtrl', ['$scope','$routeParams','SingleBuc
         console.log($routeParams);
         // Get the bucketlist
         SingleBucketlist.get({id: $routeParams.id}, function success(response){
-            console.log(response);
+            $scope.bucketlist = response
         }, function error(response){
             console.log(response);
         });
+
+        $scope.errors = {
+            itemName: []
+        }
+
+        $scope.addNewItem = function() {
+            // Use item service to add item if name is present
+            if($scope.newItemName === '' || $scope.newItemName === undefined) {
+                $scope.errors.itemName.push('Item name cannot be empty');
+                return;
+                }
+
+        };
+
     }
 ]);
 
