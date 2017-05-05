@@ -57,6 +57,22 @@ yoloServices.factory('Item', ['$resource', 'getAuthTokens',
     }
 ]);
 
+yoloServices.factory('SingleItem', ['$resource', 'getAuthTokens',
+    function ($resource, getAuthTokens){
+        return $resource(
+        'http://127.0.0.1:5000/api/v1/bucketlists/:bucketlistId/items/:itemId/',
+        {},{
+        edit: {
+            method: 'PUT',
+            cache: false,
+            isArray: false,
+            headers: { Authorization: 'Basic ' + getAuthTokens(), 'Content-Type': 'application/x-www-form-urlencoded'}
+        }
+        }
+        );
+    }
+]);
+
 // Store auth tokens
 yoloServices.factory('saveAuthToken',['$cookies',
     function($cookies) {

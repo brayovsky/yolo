@@ -178,8 +178,8 @@ yoloControllers.controller('DashboardCtrl', ['$scope', '$http','Bucketlist','$lo
         };
     }]);
 
-yoloControllers.controller('BucketlistCtrl', ['$scope','$routeParams','SingleBucketlist','Item','$location',
-    function($scope, $routeParams, SingleBucketlist, Item, $location){
+yoloControllers.controller('BucketlistCtrl', ['$scope','$routeParams','SingleBucketlist','Item','$location','SingleItem',
+    function($scope, $routeParams, SingleBucketlist, Item, $location, SingleItem){
         // Get the bucketlist
         SingleBucketlist.get({id: $routeParams.id}, function success(response){
             $scope.bucketlist = response
@@ -225,6 +225,21 @@ yoloControllers.controller('BucketlistCtrl', ['$scope','$routeParams','SingleBuc
             });
 
         };
+
+        $scope.editItem = function(itemId, itemIndex) {
+            // Use service to edit the item
+            if ($scope.bucketlist.items[itemIndex].name === '' || $scope.bucketlist.items[itemIndex].name === undefined){
+                $scope.errors.itemName = ['Name cannot be empty'];
+                return;
+            }
+            SingleItem.edit({bucketlistId: $scope.bucketlist.id, 'itemId': itemId}, $.param({name: $scope.bucketlist.items[itemIndex].name},
+            function success(response){
+                // Reassign object
+                $scope.bucketlist.items[itemIndex] = response;
+            }, function error(response){
+                $scope.errors.itemName = ['Item could not be edited'];
+            }));
+        }
 
         $scope.deleteBucketlist = function(){
             // Close modal
