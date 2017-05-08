@@ -91,11 +91,12 @@
 
                 <p>You Only Live Once!!! Enjoy it!<br>
                 Yolo is an app built to help you seize the moments. Manage your bucketlists. See what you can do!</p>
-                <button class="btn btn-primary" id="sign-up-btn" ng-click="toggleSignup()">Sign up</button>
-                <button class="btn btn-primary" id="log-in-btn" ng-click="toggleLogin()">Log in</button>
+                <button class="btn btn-primary" id="sign-up-btn" ng-click="toggleSignup($event)">Sign up</button>
+                <button class="btn btn-primary" id="log-in-btn" ng-click="toggleLogin($event)">Log in</button>
                 <div class="text-left">
 
                 <form id="loginform" ng-show="showLogin">
+                    <h4>Log in</h4>
                     <div class="form-group">
                         <label for="login-username">Username</label>
                         <input class="form-control" type="text" name="username" id="login-username" placeholder="Username" ng-model="loginUsername" required>
@@ -111,6 +112,7 @@
                 </form>
 
                 <form id="signupform" ng-show="showSignup">
+                    <h4>Sign up</h4>
                     <div class="form-group">
                         <label for="signup-username">Username</label>
                         <input class="form-control" type="text" name="username" id="signup-username" ng-model="signupUsername" required>

@@ -6,7 +6,7 @@ yoloControllers.controller('MainCtrl', ['$scope','$http','$location','saveAuthTo
     function MainCtrl($scope, $http, $location, saveAuthToken, deleteAuthToken) {
         $scope.appName = 'yolo';
         $scope.showLogin = false;
-        $scope.showSignup = false;
+        $scope.showSignup = true;
         $scope.userExists = false;
 
         // Highlight inputs if they have errors
@@ -15,12 +15,12 @@ yoloControllers.controller('MainCtrl', ['$scope','$http','$location','saveAuthTo
         }
 
         // Toggle login form
-        $scope.toggleLogin = function(){
+        $scope.toggleLogin = function(event){
             $scope.showLogin = !$scope.showLogin;
             $scope.showSignup = $scope.showSignup ? !$scope.showSignup : $scope.showSignup;
         };
         // Toggle signup form
-        $scope.toggleSignup = function(){
+        $scope.toggleSignup = function(event){
             $scope.showSignup = !$scope.showSignup;
             $scope.showLogin = $scope.showLogin ? !$scope.showLogin : $scope.showLogin;
          };
