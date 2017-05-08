@@ -140,7 +140,6 @@ yoloControllers.controller('DashboardCtrl', ['$scope', '$http','Bucketlist','$lo
             $location.path('/')
         });
         $scope.loadBucketlist = function(){
-//            alert($scope.bucketlistToView)
             $location.path('/viewbucketlist/1');
         };
 
@@ -306,7 +305,7 @@ yoloControllers.controller('SearchCtrl', ['$scope','SharedData','Bucketlist','$l
     function($scope, SharedData, Bucketlist, $location){
         $scope.searchTerm = SharedData.getSearchTerm();
         Bucketlist.get({q: $scope.searchTerm}, function success(response){
-            $scope.bucketlists = response.bucketlists
+            $scope.bucketlists = response.bucketlists;
         });
         $scope.goToDashboard = function(){
             $location.path('/dashboard');

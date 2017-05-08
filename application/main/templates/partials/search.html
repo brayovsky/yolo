@@ -10,7 +10,7 @@
                 </div>
                 <div class="col-md-4" ng-repeat="bucketlist in bucketlists">
                     <div class="bucketlist-card">
-                        <h3>{{ bucketlist.name }}</h3>
+                        <a ng-href="#!/viewbucketlist/{{ bucketlist.id }}"><h3>{{ bucketlist.name | capitalize }}</h3></a>
                         <ul>
                             <li ng-repeat="item in bucketlist.items">{{ item.name }}</li>
                         </ul>
