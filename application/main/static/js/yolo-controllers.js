@@ -295,15 +295,22 @@ yoloControllers.controller('BucketlistCtrl', ['$scope','$routeParams','SingleBuc
             });
         };
 
+        $scope.goToDashboard = function(){
+            $location.path('/dashboard');
+        };
+
     }
 ]);
 
-yoloControllers.controller('SearchCtrl', ['$scope','SharedData','Bucketlist',
-    function($scope, SharedData, Bucketlist){
+yoloControllers.controller('SearchCtrl', ['$scope','SharedData','Bucketlist','$location',
+    function($scope, SharedData, Bucketlist, $location){
         $scope.searchTerm = SharedData.getSearchTerm();
         Bucketlist.get({q: $scope.searchTerm}, function success(response){
             $scope.bucketlists = response.bucketlists
         });
+        $scope.goToDashboard = function(){
+            $location.path('/dashboard');
+        };
     }
 
 ]);
