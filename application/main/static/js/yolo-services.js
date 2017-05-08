@@ -107,8 +107,8 @@ yoloServices.factory('getAuthTokens', ['$cookies',
 yoloServices.factory('deleteAuthToken', ['$cookies',
     function($cookies) {
         return function() {
-        if ($cookies.authToken !== '' || $cookies.authToken !== undefined){
-            $cookies.authToken = '';
+        if ($cookies.get('authToken') !== '' || $cookies.get('authToken') !== undefined){
+            $cookies.remove('authToken');
         }
     };
 }]);
