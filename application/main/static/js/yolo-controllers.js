@@ -147,7 +147,8 @@ yoloControllers.controller('DashboardCtrl', ['$scope', '$http','Bucketlist','$lo
             // send request to search
             if($scope.searchTerm !== '' || $scope.searchTerm !== undefined){
                 SharedData.setSearchTerm($scope.searchTerm);
-                $location.path('/search');
+                var searchPath = '/search/' + $scope.searchTerm;
+                $location.path(searchPath);
             }
             return;
         };
@@ -301,9 +302,9 @@ yoloControllers.controller('BucketlistCtrl', ['$scope','$routeParams','SingleBuc
     }
 ]);
 
-yoloControllers.controller('SearchCtrl', ['$scope','SharedData','Bucketlist','$location',
-    function($scope, SharedData, Bucketlist, $location){
-        $scope.searchTerm = SharedData.getSearchTerm();
+yoloControllers.controller('SearchCtrl', ['$scope','Bucketlist','$location','$routeParams',
+    function($scope, Bucketlist, $location, $routeParams){
+        $scope.searchTerm = $routeParams.searchTerm;
         Bucketlist.get({q: $scope.searchTerm}, function success(response){
             $scope.bucketlists = response.bucketlists;
         });
@@ -319,18 +320,4 @@ yoloControllers.filter('capitalize', function() {
       return (!!input) ? input.charAt(0).toUpperCase() +
       input.substr(1).toLowerCase() : '';
     }
-});
-
-yoloControllers.factory('SharedData', function () {
-    var data = {
-        searchTerm: ''
-    };
-    return {
-        getSearchTerm: function () {
-            return data.searchTerm;
-        },
-        setSearchTerm: function (searchTerm) {
-            data.searchTerm = searchTerm;
-        }
-    };
 });

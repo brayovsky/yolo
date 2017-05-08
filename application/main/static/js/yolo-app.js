@@ -16,7 +16,7 @@ yoloApp.config(['$routeProvider', '$locationProvider',
             templateUrl: '/partials/bucketlists.html',
             controller: 'DashboardCtrl'
         }).
-        when('/search',  {
+        when('/search/:searchTerm',  {
             templateUrl: '/partials/search.html',
             controller: 'SearchCtrl'
         }).
