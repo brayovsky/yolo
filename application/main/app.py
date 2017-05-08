@@ -1,4 +1,5 @@
 from urllib.parse import urljoin
+from datetime import datetime
 
 from flask import Flask, request, g, render_template
 from flask_restful import Resource, Api
@@ -370,7 +371,8 @@ api.add_resource(BucketListItems, "/bucketlists/<id>/items/<item_id>/",
 # Normal html response routes
 @app.route("/")
 def show_skeleton():
-    return render_template("home.html")
+    year = datetime.now().year
+    return render_template("home.html", year=year)
 
 
 @app.route("/partials/main.html")

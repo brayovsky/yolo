@@ -127,6 +127,13 @@ yoloControllers.controller('DashboardCtrl', ['$scope', '$http','Bucketlist','$lo
         // Get all bucketlists
         Bucketlist.get({}, function success(response){
             $scope.bucketlists = response.bucketlists;
+            $scope.currentPage = response.current_page;
+            $scope.totalPages = response.pages;
+            $scope.pagesButtons = new Array(response.pages);
+            // Populate pages buttons with the page
+            for(var i=0; i<$scope.pagesButtons.length; i++) {
+                $scope.pagesButtons[i] = i+1;
+            }
         },
         function error(response){
             // Lacks authentication, go back home
@@ -153,6 +160,7 @@ yoloControllers.controller('DashboardCtrl', ['$scope', '$http','Bucketlist','$lo
         $scope.errors = {
             bucketlistName: []
         };
+
         $scope.createBucketlist = function(){
             if($scope.bucketlistName === '' || $scope.bucketlistName === undefined){
                 // Add errors
@@ -174,6 +182,19 @@ yoloControllers.controller('DashboardCtrl', ['$scope', '$http','Bucketlist','$lo
                     $location.path("/");
                 }
 
+            });
+        };
+
+        $scope.getPage = function(page){
+            // Use bucketlist service with pages variable
+            Bucketlist.get({page: page}, function success(response){
+                $scope.bucketlists = response.bucketlists;
+                $scope.currentPage = response.current_page;
+                $scope.totalPages = response.pages;
+                },
+                function error(response){
+                    // Lacks authentication, go back home
+                    $location.path('/');
             });
         };
     }]);
