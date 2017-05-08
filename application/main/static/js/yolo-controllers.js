@@ -122,8 +122,8 @@ yoloControllers.controller('MainCtrl', ['$scope','$http','$location','saveAuthTo
         };
     }]);
 
-yoloControllers.controller('DashboardCtrl', ['$scope', '$http','Bucketlist','$location','SharedData',
-    function DashboardCtrl($scope, $http, Bucketlist, $location, SharedData){
+yoloControllers.controller('DashboardCtrl', ['$scope', '$http','Bucketlist','$location',
+    function DashboardCtrl($scope, $http, Bucketlist, $location){
         // Get all bucketlists
         Bucketlist.get({}, function success(response){
             $scope.bucketlists = response.bucketlists;
@@ -145,8 +145,7 @@ yoloControllers.controller('DashboardCtrl', ['$scope', '$http','Bucketlist','$lo
 
         $scope.searchBucketlists = function(){
             // send request to search
-            if($scope.searchTerm !== '' || $scope.searchTerm !== undefined){
-                SharedData.setSearchTerm($scope.searchTerm);
+            if($scope.searchTerm !== '' && $scope.searchTerm !== undefined){
                 var searchPath = '/search/' + $scope.searchTerm;
                 $location.path(searchPath);
             }
@@ -307,6 +306,13 @@ yoloControllers.controller('SearchCtrl', ['$scope','Bucketlist','$location','$ro
         $scope.searchTerm = $routeParams.searchTerm;
         Bucketlist.get({q: $scope.searchTerm}, function success(response){
             $scope.bucketlists = response.bucketlists;
+            $scope.currentPage = response.current_page;
+            $scope.totalPages = response.pages;
+            $scope.pagesButtons = new Array(response.pages);
+            // Populate pages buttons with the page
+            for(var i=0; i<$scope.pagesButtons.length; i++) {
+                $scope.pagesButtons[i] = i+1;
+            }
         });
         $scope.goToDashboard = function(){
             $location.path('/dashboard');
