@@ -35,6 +35,12 @@ yoloServices.factory('SingleBucketlist', ['$resource', 'getAuthTokens',
             cache: false,
             isArray: false,
             headers: { Authorization: 'Basic ' + getAuthTokens()}
+        },
+        edit: {
+            method: 'PUT',
+            cache: false,
+            isArray: false,
+            headers: { Authorization: 'Basic ' + getAuthTokens(), 'Content-Type': 'application/x-www-form-urlencoded'}
         }
         }
         );

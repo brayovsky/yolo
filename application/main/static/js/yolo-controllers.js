@@ -257,6 +257,23 @@ yoloControllers.controller('BucketlistCtrl', ['$scope','$routeParams','SingleBuc
             });
         };
 
+        $scope.editBucketlistName = function(){
+            // Name cannot be empty
+            if ($scope.bucketlist.name === '' || $scope.bucketlist.name === undefined){
+                $scope.errors.bucketlistErrors = ['Bucketlist name cannot be empty'];
+                return;
+            }
+            // Edit the bucketlist name
+            SingleBucketlist.edit({id: $scope.bucketlist.id}, $.param({name: $scope.bucketlist.name}),
+            function success(response) {
+                // Change the name
+                $scope.bucketlist = response;
+            }, function error(response) {
+                // Show errors
+                $scope.errors.bucketlistErrors = ['An error occured and we could not edit the name'];
+            });
+        };
+
     }
 ]);
 

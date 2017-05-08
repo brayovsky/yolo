@@ -67,7 +67,7 @@ class User(db.Model):
 class BucketlistsQuery(BaseQuery, SearchQueryMixin):
     pass
 
-
+# TODO: Bucketlist names and item names should not be unique
 class Bucketlists(db.Model):
     query_class = BucketlistsQuery
     __tablename__ = "bucketlists"
