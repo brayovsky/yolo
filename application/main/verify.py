@@ -91,6 +91,13 @@ class Verify:
         return True
 
     @staticmethod
+    def check_username_exists(username):
+        user = User.query.filter_by(username=username).first()
+        if user:
+            return True
+        return False
+
+    @staticmethod
     def verify_login(username, password):
         """Verify login details are correct"""
         user = User.query.filter_by(username=username).first()
@@ -102,6 +109,7 @@ class Verify:
     @staticmethod
     def verify_user_details(user_data):
         """Verify user information using UserSchema"""
+        # TODO: Check for empty strings
         data, errors = user_schema.load(user_data)
         if errors:
             return {"success": False,
@@ -110,6 +118,7 @@ class Verify:
 
     @staticmethod
     def verify_bucketlist_details(bucketlist_data):
+        # TODO: Check for empty strings
         data, errors = bucketlist_schema.load(bucketlist_data)
         if errors:
             return {"success": False,
@@ -118,6 +127,7 @@ class Verify:
 
     @staticmethod
     def verify_item_details(item_data):
+        # TODO: Check for empty strings
         data, errors = items_schema.load(item_data)
         if errors:
             return {"success": False,

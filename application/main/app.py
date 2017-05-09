@@ -1,8 +1,8 @@
 from urllib.parse import urljoin
+from datetime import datetime
 
-from flask import Flask, request, g
+from flask import Flask, request, g, render_template
 from flask_restful import Resource, Api
-from sqlalchemy_searchable import search
 
 app = Flask(__name__)
 # Load configurations
@@ -96,11 +96,9 @@ class Register(Resource, Common):
         if not verify_data["success"]:
             return verify_data["errors"], 400
 
-        # Check user logged in or exists
-        if Verify.verify_user(user_data["username"],
-                              user_data["password"],
-                              ):
-            return {"message": "You are already logged in or user exists"}, 403
+        # Check user exists
+        if Verify.check_username_exists(user_data["username"]):
+            return {"message": "User exists"}, 403
 
         # User passed register him/her
         new_user = User(user_data["username"],
@@ -138,8 +136,9 @@ class UserBucketlists(Resource, Common):
             return {"name": ["Field may not be null."]}, 400
 
         if bucketlist:
-            return {"name": "The bucketlist '{}' already exists"
-                    .format(bucketlist_data["name"])},\
+            return {"name": ["The bucketlist '{}' already exists".format(
+                    bucketlist_data["name"])]
+                    },\
                 400
 
         # Create bucketlist
@@ -275,7 +274,7 @@ class NewBucketListItems(Resource, Common):
         item_valid = Verify.verify_item_details(item_data)
         if not item_valid["success"]:
             return item_valid["errors"], 400
-
+        item_data["name"] = item_data["name"].lower()
         # Verify bucketlist exists
         bucketlist = Verify.verify_bucketlist_exists(bucketlist_id=id)
         if not bucketlist:
@@ -285,7 +284,7 @@ class NewBucketListItems(Resource, Common):
         item_exists = Verify.verify_item_exists(id,
                                                 item_name=item_data["name"])
         if item_exists:
-            return {"message": "This item already exists in the bucketlist"},\
+            return {"name": ["This item already exists in the bucketlist"]},\
                 400
 
         # Save item
@@ -369,6 +368,32 @@ api.add_resource(NewBucketListItems, "/bucketlists/<id>/items/",
 api.add_resource(BucketListItems, "/bucketlists/<id>/items/<item_id>/",
                  strict_slashes=False)
 
+
+# Normal html response routes
+@app.route("/")
+def show_skeleton():
+    year = datetime.now().year
+    return render_template("home.html", year=year)
+
+
+@app.route("/partials/main.html")
+def show_landingpage():
+    return render_template("partials/landingpage.html")
+
+
+@app.route("/partials/bucketlists.html")
+def show_bucketlists():
+    return render_template("partials/bucketlists.html")
+
+
+@app.route("/partials/search.html")
+def show_search():
+    return render_template("partials/search.html")
+
+
+@app.route("/partials/viewbucketlist.html")
+def show_single_bucketlist():
+    return render_template("partials/viewbucketlist.html")
 
 if __name__ == "__main__":
     app.run()
