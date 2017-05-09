@@ -25,16 +25,15 @@ class TestRegister(BaseTestCase):
             verify_user_details.assert_called_with(self.user_data)
 
     def test_register_checks_user_exists(self):
-        # Function verify_user will check if user exists
-        # Assert verify_user was called
+        # Function check_username_exists will check if user exists
+        # Assert check_username_exists was called
 
-        with patch('application.main.verify.Verify.verify_user',
+        with patch('application.main.verify.Verify.check_username_exists',
                    return_value=False) as verify_user:
             self.client.post(self.url,
                              data=self.user_data)
 
-            verify_user.assert_called_with(self.user_data["username"],
-                                           self.user_data["password"])
+            verify_user.assert_called_with(self.user_data["username"])
 
     def test_register_api_status_with_valid_data(self):
         # Check status code

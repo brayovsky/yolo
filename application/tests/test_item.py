@@ -54,7 +54,7 @@ class TestCreateNewItem(BaseTestCase):
                                    )
         request_response = json.loads(request.data)
         expected_response = {
-            "message": "This item already exists in the bucketlist"}
+            "name": ["This item already exists in the bucketlist"]}
         self.assertDictEqual(request_response, expected_response)
 
     def test_post_api_with_non_existent_bucketlist(self):

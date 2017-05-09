@@ -136,7 +136,8 @@ class UserBucketlists(Resource, Common):
             return {"name": ["Field may not be null."]}, 400
 
         if bucketlist:
-            return {"name": ["The bucketlist '{}' already exists".format(bucketlist_data["name"])]
+            return {"name": ["The bucketlist '{}' already exists".format(
+                bucketlist_data["name"])]
                     },\
                 400
 
@@ -388,6 +389,7 @@ def show_bucketlists():
 @app.route("/partials/search.html")
 def show_search():
     return render_template("partials/search.html")
+
 
 @app.route("/partials/viewbucketlist.html")
 def show_single_bucketlist():
