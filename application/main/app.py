@@ -137,7 +137,7 @@ class UserBucketlists(Resource, Common):
 
         if bucketlist:
             return {"name": ["The bucketlist '{}' already exists".format(
-                bucketlist_data["name"])]
+                    bucketlist_data["name"])]
                     },\
                 400
 
