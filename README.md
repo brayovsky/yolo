@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/brayovsky/yolo.svg?branch=master)](https://travis-ci.org/brayovsky/yolo)
+[![Build Status](https://travis-ci.org/brayovsky/yolo.svg?branch=develop)](https://travis-ci.org/brayovsky/yolo)
 
 # yolo
 Yolo is an app that provides an API for storing and managing bucketlists and a user interface for doing the same.
@@ -56,14 +56,14 @@ The building blocks are:
  ## API
  
  The API endpoints are:
-* POST /auth/login - Log in
-* POST /auth/register - Register
-* POST /bucketlists/ - Create bucketlist
-* GET /bucketlists/ - Retrieve bucketlists
-* GET /bucketlists/<id> - Retrieve a specific bucketlist
-* PUT /bucketlists/<id> - Edit a bucketlist
-* DELETE /bucketlists/<id> - Delete a bucketlist
-* POST /bucketlists/<id>/items/ - Create items in a bucketlist
-* PUT /bucketlists/<id>/items/<item_id> - Edit an item in a bucketlist
-* DELETE /bucketlists/<id>/items/<item_id> - Delete an item in a bucketlist
+* `POST /auth/login` - Log in
+* `POST /auth/register` - Register
+* `POST /bucketlists/` - Create bucketlist
+* `GET /bucketlists/` - Retrieve bucketlists
+* `GET /bucketlists/<id>` - Retrieve a specific bucketlist
+* `PUT /bucketlists/<id>` - Edit a bucketlist
+* `DELETE /bucketlists/<id>` - Delete a bucketlist
+* `POST /bucketlists/<id>/items/` - Create items in a bucketlist
+* `PUT /bucketlists/<id>/items/<item_id>` - Edit an item in a bucketlist
+* `DELETE /bucketlists/<id>/items/<item_id>` - Delete an item in a bucketlist
  
