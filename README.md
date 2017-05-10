@@ -33,6 +33,8 @@ The building blocks are:
  
  * Add a secret key for the flask app as an environment variable named `YOLO_SECRET_KEY`.
  
+ * Set up a database for running tests and save its database uri as an environment variable named `YOLO_TEST_DATABASE_URL`
+ 
  * Run database migrations.
      
         $ python manage.py db init
@@ -51,6 +53,10 @@ The building blocks are:
   and to remove the tables run:
   
         $ python manage.py drop_database
+        
+  To test the application and show coverage, run:
+  
+        $ nosetests application --with-coverage
         
         
  ## API

@@ -1,7 +1,6 @@
 from urllib.parse import urljoin
-from datetime import datetime
 
-from flask import Flask, request, g, render_template
+from flask import Flask, request, g
 from flask_restful import Resource, Api
 from flask_cors import CORS
 
@@ -370,32 +369,6 @@ api.add_resource(NewBucketListItems, "/bucketlists/<id>/items/",
 api.add_resource(BucketListItems, "/bucketlists/<id>/items/<item_id>/",
                  strict_slashes=False)
 
-
-# Normal html response routes
-@app.route("/")
-def show_skeleton():
-    year = datetime.now().year
-    return render_template("home.html", year=year)
-
-
-@app.route("/partials/main.html")
-def show_landingpage():
-    return render_template("partials/landingpage.html")
-
-
-@app.route("/partials/bucketlists.html")
-def show_bucketlists():
-    return render_template("partials/bucketlists.html")
-
-
-@app.route("/partials/search.html")
-def show_search():
-    return render_template("partials/search.html")
-
-
-@app.route("/partials/viewbucketlist.html")
-def show_single_bucketlist():
-    return render_template("partials/viewbucketlist.html")
 
 if __name__ == "__main__":
     app.run()
