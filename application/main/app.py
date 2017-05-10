@@ -3,6 +3,7 @@ from datetime import datetime
 
 from flask import Flask, request, g, render_template
 from flask_restful import Resource, Api
+from flask_cors import CORS
 
 app = Flask(__name__)
 # Load configurations
@@ -12,6 +13,7 @@ app.config.from_object("application.settings.DevelopmentConfig")
 from application.models.models import User, Bucketlists, Items, db
 from application.main.verify import Verify, BucketListSchema, ItemsSchema, auth
 
+cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 api = Api(app, prefix="/api/v1")
 bucketlist_schema = BucketListSchema()
 item_schema = ItemsSchema()
