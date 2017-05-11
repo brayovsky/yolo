@@ -84,7 +84,8 @@ class TestEditItem(BaseTestCase):
         super(TestEditItem, self).setUp()
         self.url = "api/v1/bucketlists/" + str(self.bucketlist.id) + \
                    "/items/" + str(self.item.id) + "/"
-        self.item_data = {"name": "updated name"}
+        self.item_data = {"name": "updated name",
+                          "done": "false"}
 
     def test_put_verifies_data_sent(self):
         # Check if verify_item_details was called
@@ -93,6 +94,8 @@ class TestEditItem(BaseTestCase):
             self.client.put(self.url,
                             data=self.item_data,
                             headers={"Authorization": self.authorization})
+            # String 'false' will be converted to a boolean 'False'
+            self.item_data["done"] = False
 
             verify_item_details.assert_called_with(
                 self.item_data)
