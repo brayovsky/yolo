@@ -54,6 +54,11 @@ class Common:
 
         return intval
 
+    @staticmethod
+    def get_bool_from_string(val):
+        val = str(val).lower()
+        return val == 'true'
+
 
 class Login(Resource):
     """Bundles all processes from the request
@@ -235,6 +240,10 @@ class SingleBucketlist(Resource, Common):
         if not bucketlist:
             return {"message": "Bucketlist does not exist"}, 404
 
+        # Check for similar bucketlist names
+        if Verify.check_similar_bucketlist(id, bucketlist_data["name"]):
+            return {"name": ["A similar bucketlist exists"]}, 400
+
         # Change data
         bucketlist.name = bucketlist_data["name"]
         bucketlist.update_date_modified()
@@ -307,7 +316,9 @@ class BucketListItems(Resource, Common):
     @auth.login_required
     def put(self, id, item_id):
         """Updates an item in a bucketlist"""
-        item_data = {"name": request.form.get("name")}
+        item_data = {"name": request.form.get("name"),
+                     "done": self.get_bool_from_string(
+                         request.form.get("done"))}
 
         # Verify if data is valid
         item_data_valid = Verify.verify_item_details(item_data)
@@ -327,8 +338,13 @@ class BucketListItems(Resource, Common):
         if not item:
             return {"message": "Item does not exist"}, 404
 
-        # Update name
+        # Check for similar items
+        if Verify.check_similar_item(item_id, id, item_data["name"]):
+            return {"name": ["A similar item exists in this bucketlist"]}, 400
+
+        # Update name and done
         item.name = item_data["name"]
+        item.done = item_data["done"]
         item.update_date_modified()
         self.update_db()
 
