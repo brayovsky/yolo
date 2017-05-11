@@ -74,7 +74,7 @@ class Bucketlists(db.Model):
     __tablename__ = "bucketlists"
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.UnicodeText, unique=True, nullable=False)
+    name = db.Column(db.UnicodeText, nullable=False)
     created_by = db.Column(db.Integer, db.ForeignKey("users.id"),
                            nullable=False)
     date_created = db.Column(db.DateTime,
@@ -102,7 +102,7 @@ class Items(db.Model):
     __tablename__ = "items"
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(250), unique=True, nullable=False)
+    name = db.Column(db.String(250), nullable=False)
     bucketlist = db.Column(db.Integer, db.ForeignKey("bucketlists.id"),
                            nullable=False)
     date_created = db.Column(db.DateTime,
