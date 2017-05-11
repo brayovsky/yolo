@@ -110,6 +110,10 @@ class Items(db.Model):
                              default=datetime.now())
     date_modified = db.Column(db.DateTime)
 
+    done = db.Column(db.Boolean,
+                     nullable=False,
+                     default=False)
+
     def __init__(self, name, bucketlist):
         self.name = name.lower()
         self.bucketlist = bucketlist
