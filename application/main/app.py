@@ -54,6 +54,11 @@ class Common:
 
         return intval
 
+    @staticmethod
+    def get_bool_from_string(val):
+        val = str(val).lower()
+        return val == 'true'
+
 
 class Login(Resource):
     """Bundles all processes from the request
@@ -307,7 +312,9 @@ class BucketListItems(Resource, Common):
     @auth.login_required
     def put(self, id, item_id):
         """Updates an item in a bucketlist"""
-        item_data = {"name": request.form.get("name")}
+        item_data = {"name": request.form.get("name"),
+                     "done": self.get_bool_from_string(
+                         request.form.get("done"))}
 
         # Verify if data is valid
         item_data_valid = Verify.verify_item_details(item_data)
@@ -327,8 +334,9 @@ class BucketListItems(Resource, Common):
         if not item:
             return {"message": "Item does not exist"}, 404
 
-        # Update name
+        # Update name and done
         item.name = item_data["name"]
+        item.done = item_data["done"]
         item.update_date_modified()
         self.update_db()
 

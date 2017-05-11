@@ -21,6 +21,7 @@ class ItemsSchema(Schema):
     bucketlist = fields.Int()
     date_created = fields.DateTime()
     date_modified = fields.DateTime()
+    done = fields.Boolean()
 
 
 class BucketListSchema(Schema):
