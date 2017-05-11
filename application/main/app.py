@@ -338,6 +338,10 @@ class BucketListItems(Resource, Common):
         if not item:
             return {"message": "Item does not exist"}, 404
 
+        # Check for similar items
+        if Verify.check_similar_item(item_id, id, item_data["name"]):
+            return {"name": ["A similar item exists in this bucketlist"]}, 400
+
         # Update name and done
         item.name = item_data["name"]
         item.done = item_data["done"]

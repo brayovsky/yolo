@@ -72,7 +72,15 @@ class Verify:
 
     @staticmethod
     def check_similar_item(item_id, bucketlist_id, check_name):
-        pass
+        item = Items.query.filter(
+            Items.id != item_id,
+            Items.bucketlist == bucketlist_id,
+            Items.name == check_name
+        ).first()
+
+        if item:
+            return True
+        return False
 
     @staticmethod
     def verify_item_exists(bucketlist_id, item_id=None, item_name=None):
