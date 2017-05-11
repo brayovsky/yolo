@@ -240,6 +240,10 @@ class SingleBucketlist(Resource, Common):
         if not bucketlist:
             return {"message": "Bucketlist does not exist"}, 404
 
+        # Check for similar bucketlist names
+        if Verify.check_similar_bucketlist(id, bucketlist_data["name"]):
+            return {"name": ["A similar bucketlist exists"]}, 400
+
         # Change data
         bucketlist.name = bucketlist_data["name"]
         bucketlist.update_date_modified()

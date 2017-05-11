@@ -59,6 +59,22 @@ class Verify:
         return bucketlist
 
     @staticmethod
+    def check_similar_bucketlist(bucketlist_id, check_name):
+        bucketlist = Bucketlists.query.filter(
+            Bucketlists.id != bucketlist_id,
+            Bucketlists.name == check_name,
+            Bucketlists.created_by == g.user.id
+        ).first()
+
+        if bucketlist:
+            return True
+        return False
+
+    @staticmethod
+    def check_similar_item(item_id, bucketlist_id, check_name):
+        pass
+
+    @staticmethod
     def verify_item_exists(bucketlist_id, item_id=None, item_name=None):
         """Verify item_id exists in db"""
         if item_id:
