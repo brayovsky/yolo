@@ -3,10 +3,9 @@
 # yolo
 Yolo is an app that provides an API for storing and managing bucketlists and a user interface for doing the same.
 
-The building blocks are:
+The main building blocks are:
 
 * Python 3 - Flask microframework
-* Docopts
 
 ## Setting Up for Development
 * Prepare directory for project code and virtualenv:
